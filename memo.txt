@@ -1,0 +1,2 @@
+Guida generica su iText -> https://medium.com/@appdevinsights/android-text-to-pdf-using-itext-library-8fd6e1ed51d9
+Documentazione da Java (adattabile in Kotlin immagino) -> https://api.itextpdf.com/iText/java/9.0.0/
