@@ -6,9 +6,6 @@ plugins {
 android {
     namespace = "com.example.image2pdf"
     compileSdk = 35
-    buildFeatures {
-       viewBinding = true
-    }
 
 
     defaultConfig {
@@ -36,6 +33,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 

@@ -1,3 +1,12 @@
 Guida generica su iText -> https://medium.com/@appdevinsights/android-text-to-pdf-using-itext-library-8fd6e1ed51d9
 Documentazione da Java (adattabile in Kotlin immagino) -> https://api.itextpdf.com/iText/java/9.0.0/
 video su iText (da verificare la versione) -> https://www.youtube.com/watch?v=4YlxFuCPQqc&list=PLFh8wpMiEi89IAlJLfw43YjO0DRqhOpaF
+
+-- memo per l'esame --
+evitiamo di usare findViewById() grazie a viewBinding, questa è un'opzione attivata nel manifest di
+Android buildFeatures {viewBinding = true}. Quando questa opzione è attiva è possibile eseguire
+un inflate dall'activity XML al file kotlin con viewBinding = <Nome-activity> Binding.inflate(layoutInflater),
+esempio: viewBinding = ActivityFotocameraBinding.inflate(layoutInflater), ora viewBinding è un riferimento
+ad ogni elemento presente nell'XML, possiamo ad esempio fare riferimento ad un elemento UI semplicemente con il suo ID, esempio
+viewBinding.viewFinder, che fa riferimento quindi all'elemento viewFinder.
+
