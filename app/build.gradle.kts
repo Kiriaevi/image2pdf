@@ -6,6 +6,10 @@ plugins {
 android {
     namespace = "com.example.image2pdf"
     compileSdk = 35
+    buildFeatures {
+       viewBinding = true
+    }
+
 
     defaultConfig {
         applicationId = "com.example.image2pdf"
@@ -27,8 +31,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "11"
