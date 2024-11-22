@@ -49,6 +49,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // icone extra 
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    // Dipendenze di cameraX
     val cameraxVersion = "1.2.2"
     implementation("androidx.camera:camera-core:$cameraxVersion")
     implementation("androidx.camera:camera-camera2:$cameraxVersion")
