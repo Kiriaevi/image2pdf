@@ -4,22 +4,37 @@ import androidx.activity.enableEdgeToEdge
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.image2pdf.databinding.ActivityMainBinding
+import com.example.image2pdf.databinding.ActivityFotocameraBinding
 import java.util.concurrent.ExecutorService
-
 
 // https://developer.android.com/codelabs/camerax-getting-started#1
 class Fotocamera : AppCompatActivity() {
-    private lateinit var viewBinding: ActivityMainBinding
+    /*
+    Lo spiego prima che mi tartassa qualcuno i maroni per la classe ActivityFotocameraBinding
+    Nel build.gradle ho abilitato i bindings, una funzione per cui sei in grado di riferirti
+    ad ogni elemento denotato nei file xml delle activity secondo il loro id. Ad esempio
+    ho creato un PreviewView a cui ho assegnato un ID come "viewFinder", per fare riferimento
+    a questo o si usa il metodo della prof  che minimamente non ricordo OPPURE si usano i bindings
+    di android. I bindings creano delle classi APPOSTA che contengono i dati dell'XML dell'activity,
+    nel mio caso, dato che ho creato la activity: activity_fotocamera, se faccio
+    import com.example.image2pdf.databinding.ActivityFotocameraBinding, ho accesso a tutte le cose con ID
+    e quindi ho avuto il permesso di fare questo:
+    setSurfaceProvider(viewBinding.viewFinder.surfaceProvider), ovvero viewBinding.viewFinder
+     */
+    private lateinit var viewBinding: ActivityFotocameraBinding
 
     private var imageCapture: ImageCapture? = null
     private var videoCapture: VideoCapture<Recorder>? = null
@@ -29,7 +44,7 @@ class Fotocamera : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
         // Richiedi i permessi per la fotocamera
@@ -39,7 +54,7 @@ class Fotocamera : AppCompatActivity() {
             requestPermissions()
         }
         enableEdgeToEdge()
-        setContentView(R.layout.activity_fotocamera)
+        //setContentView(R.layout.activity_fotocamera)
 
 
     }
@@ -66,7 +81,41 @@ class Fotocamera : AppCompatActivity() {
 
     private fun captureVideo() {}
 
-    private fun startCamera() {}
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
+        // il primo parametro di addListener è un Runnable, il secondo è un Excecutor
+        // In particolare l'executor è quello del main thread, mentre il runnable lo definiamo
+        // noi con le parentesi {} e chiediamo di impostare il nostro object Preview con le
+        // immagini ottenute dalla fotocamera.
+        cameraProviderFuture.addListener({
+            // Used to bind the lifecycle of cameras to the lifecycle owner
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+            // Preview
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
+                }
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview)
+
+            } catch(exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
+            }
+
+        }, ContextCompat.getMainExecutor(this))
+
+    }
 
     private fun requestPermissions() {
         activityResultLauncher.launch(REQUIRED_PERMISSIONS)
