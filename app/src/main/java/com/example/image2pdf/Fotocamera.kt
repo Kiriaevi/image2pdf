@@ -26,6 +26,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 
 // https://developer.android.com/codelabs/camerax-getting-started#1
+// NON HO FINITO, CONTINUA QUI -> https://developer.android.com/codelabs/camerax-getting-started#4
 class Fotocamera : AppCompatActivity() {
     /*
     Lo spiego prima che mi tartassa qualcuno i maroni per la classe ActivityFotocameraBinding
