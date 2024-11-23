@@ -2,8 +2,12 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Image2pdf" parent="Theme.Material3.DayNight.NoActionBar">
             <item name="android:background">@color/grey</item>
-            <item name="android:text">"@color/white"</item>
+            <item name="android:text">@color/white</item>
+            <item name="buttonStyle">@style/MyButtonStyle</item>
     </style>
-
     <style name="Theme.Image2pdf" parent="Base.Theme.Image2pdf" />
+    <style name="MyButtonStyle">
+        <item name="android:textColor">@color/red</item>  <!-- Colore del testo -->
+        <item name="android:padding">16dp</item>  <!-- Padding personalizzato -->
+    </style>
 </resources>

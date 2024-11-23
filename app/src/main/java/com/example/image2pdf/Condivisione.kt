@@ -1,6 +1,9 @@
 package com.example.image2pdf
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,10 +14,22 @@ class Condivisione : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_condivisione)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        attendiEvento()
+    }
+
+    fun attendiEvento(){
+        val bottone1 = findViewById<Button>(R.id.bc_1)
+        val bottone2 = findViewById<Button>(R.id.bc_2)
+        bottone1.setOnClickListener {
+            cambiaActivity(Fotocamera::class.java)
         }
+        bottone2.setOnClickListener{
+            //Intent implicito per accedere ai file
+        }
+    }
+
+    fun cambiaActivity(classe :Class<out Activity>){
+        val intent = Intent(this,classe)
+        startActivity(intent)
     }
 }
