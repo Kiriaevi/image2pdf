@@ -60,4 +60,6 @@ dependencies {
 
     implementation("androidx.camera:camera-view:$cameraxVersion")
     implementation("androidx.camera:camera-extensions:$cameraxVersion")
+    // Dipendenze di iText
+    implementation("com.itextpdf:itext7-core:7.2.4")
 }
