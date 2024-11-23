@@ -52,34 +52,9 @@ class Fotocamera : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        // Richiedi i permessi per la fotocamera
-        if (allPermissionsGranted()) {
-            startCamera()
-        } else {
-            requestPermissions()
-        }
         enableEdgeToEdge()
         //setContentView(R.layout.activity_fotocamera)
     }
-    private val activityResultLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions())
-        { permissions ->
-            // Handle Permission granted/rejected
-            var permissionGranted = true
-            permissions.entries.forEach {
-                if (it.key in REQUIRED_PERMISSIONS && it.value == false)
-                    permissionGranted = false
-            }
-            if (!permissionGranted) {
-                Toast.makeText(baseContext,
-                    "Permesso negato :teschio: ",
-                    Toast.LENGTH_SHORT).show()
-            } else {
-                startCamera()
-            }
-        }
-
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return
         // senza il return l'applicazione crasha
@@ -168,14 +143,6 @@ class Fotocamera : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
         Log.d(TAG, "Fotocamera avviata!")
     }
-    private fun requestPermissions() {
-        activityResultLauncher.launch(REQUIRED_PERMISSIONS)
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
@@ -185,14 +152,6 @@ class Fotocamera : AppCompatActivity() {
         private const val TAG = "FOTOCAMERAX"
         // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
         private const val FILENAME_FORMAT = "dd-MM-yyyy-HH-mm-ss-SSS"
-        private val REQUIRED_PERMISSIONS =
-            mutableListOf (
-                Manifest.permission.CAMERA,
-            ).apply {
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                    add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
-            }.toTypedArray()
     }
 
 }
