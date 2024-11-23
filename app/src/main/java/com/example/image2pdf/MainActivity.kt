@@ -35,8 +35,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        // Richiedi i permessi per la fotocamera
-        if (allPermissionsGranted()) {
+         if (allPermissionsGranted()) {
             attendiEvento()
         } else {
             requestPermissions()
