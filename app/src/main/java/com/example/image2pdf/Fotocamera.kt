@@ -6,6 +6,12 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
+import android.graphics.Rect
+import android.graphics.YuvImage
+import android.media.Image
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -19,6 +25,7 @@ import androidx.camera.core.CameraX
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.Recorder
@@ -27,6 +34,11 @@ import androidx.camera.video.VideoCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Paragraph
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -73,6 +85,7 @@ class Fotocamera : AppCompatActivity() {
         enableEdgeToEdge()
         //setContentView(R.layout.activity_fotocamera)
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
+        // bottoneScatta.setOnClickListener { createPdf("Pictures/CameraX-Image") }
         bottoneScatta.setOnClickListener { takePhoto() }
         startCamera()
     }
@@ -209,6 +222,25 @@ class Fotocamera : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
+    fun createPdf(filePath: String) {
+        // Crea un oggetto PdfWriter che gestisce la scrittura del PDF
+        val writer = PdfWriter(filePath)
+
+        // Crea un PdfDocument, associandolo al PdfWriter
+        val pdfDocument = PdfDocument(writer)
+
+        // Crea un Document che permette di aggiungere contenuto al PDF
+        val document = Document(pdfDocument)
+
+        // Aggiungi un paragrafo con il testo "Hello World" al PDF
+        document.add(Paragraph("Hello World"))
+
+        // Chiudi il documento per completare la scrittura
+        document.close()
+
+        Toast.makeText(baseContext, "PDF creato con successo", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
