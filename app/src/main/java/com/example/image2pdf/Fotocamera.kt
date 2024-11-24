@@ -43,8 +43,6 @@ class Fotocamera : AppCompatActivity() {
     private lateinit var viewBinding: ActivityFotocameraBinding
 
     private var imageCapture: ImageCapture? = null
-    private var videoCapture: VideoCapture<Recorder>? = null
-    private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -54,6 +52,7 @@ class Fotocamera : AppCompatActivity() {
         setContentView(viewBinding.root)
         enableEdgeToEdge()
         //setContentView(R.layout.activity_fotocamera)
+        startCamera()
     }
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return
@@ -104,7 +103,6 @@ class Fotocamera : AppCompatActivity() {
         )
     }
 
-    private fun captureVideo() {}
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         // il primo parametro di addListener è un Runnable, il secondo è un Excecutor
