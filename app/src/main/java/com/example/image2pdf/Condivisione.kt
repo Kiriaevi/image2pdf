@@ -3,6 +3,7 @@ package com.example.image2pdf
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -27,16 +28,10 @@ class Condivisione : AppCompatActivity() {
             cambiaActivity(Fotocamera::class.java)
         }
         bottone2.setOnClickListener{
-            val pickMultipleMedia =
-                registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(25)) { uris ->
-                    // Callback is invoked after the user selects media items or closes the
-                    // photo picker.
-                    if (uris.isNotEmpty()) {
-                        Toast.makeText(this,"FotoSelezionate",Toast.LENGTH_SHORT)
-                    } else {
-                        Toast.makeText(this,"Foto non selezionate",Toast.LENGTH_SHORT)
-                    }
-                }
+            val intentIm = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intentIm.type="image/*"
+            intentIm.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
+            startActivityForResult(intentIm,1)
         }
     }
 
