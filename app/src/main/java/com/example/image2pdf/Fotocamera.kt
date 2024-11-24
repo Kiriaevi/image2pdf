@@ -2,15 +2,21 @@ package com.example.image2pdf
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraX
+import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -46,19 +52,35 @@ class Fotocamera : AppCompatActivity() {
 
     private lateinit var cameraExecutor: ExecutorService
 
+    companion object {
+        private const val TAG = "FOTOCAMERAX"
+        // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
+        private const val FILENAME_FORMAT = "dd-MM-yyyy-HH-mm-ss-SSS"
+        private val capabilities: MutableMap<String, Boolean> = mutableMapOf(
+            "ZERO_SHUTTER_LAG" to false,
+            "FLASHLIGHT" to false
+        )
+        // quello che l'utente vuole dalla fotocamera, ad esempio se clicco il bottone
+        // per la torcia significa che l'utente vuole utilizzarla, qui viene impostato
+        private val richiesta_utente: MutableMap<String, Boolean> = mutableMapOf(
+            "FLASHLIGHT" to false
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         enableEdgeToEdge()
         //setContentView(R.layout.activity_fotocamera)
+        val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
+        bottoneScatta.setOnClickListener { takePhoto() }
         startCamera()
     }
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return
         // senza il return l'applicazione crasha
         // https://developer.android.com/reference/kotlin/androidx/camera/core/ImageCapture
-        val imageCapture = imageCapture ?: return
+        val imageCapture = this.imageCapture ?: return
 
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.ITALY)
             .format(System.currentTimeMillis())
@@ -103,6 +125,44 @@ class Fotocamera : AppCompatActivity() {
         )
     }
 
+    private fun setCapabilities(infoCamera: CameraInfo) {
+        @ExperimentalZeroShutterLag
+        if ( infoCamera.isZslSupported )
+            capabilities["ZERO_SHUTTER_LAG"] = true
+        if ( infoCamera.hasFlashUnit() )
+            capabilities["FLASHLIGHT"] = true
+
+        // ora che conosco i dati della fotocamera in uso posso aggiornare
+        // l'oggetto Camera, per farlo richiamo la funziona updateCameraProvider()
+        updateCameraProvider()
+    }
+
+    private fun updateCameraProvider() {
+        var imageCapture: ImageCapture? = null
+        // Se possiedi la torcia e l'utente vuole utilizzarla allora attivala
+        val torcia = if (capabilities["FLASHLIGHT"] == true &&
+            richiesta_utente["FLASHLIGHT"] == true ) {
+            ImageCapture.FLASH_MODE_ON
+        } else {
+            ImageCapture.FLASH_MODE_OFF
+        }
+
+        if (capabilities["ZERO_SHUTTER_LAG"] == true) {
+            Log.e(TAG, "SIAMO NELLA MODALITÀ CON ZERO_SHUTTER")
+            @ExperimentalZeroShutterLag
+            imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG)
+                .setFlashMode(torcia)
+                .build()
+        } else if(capabilities["ZERO_SHUTTER_LAG"] == false) {
+            Log.e(TAG, "SIAMO NELLA MODALITÀ SENZA ZERO_SHUTTER")
+            imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                .setFlashMode(torcia)
+                .build()
+        }
+        this.imageCapture = imageCapture
+    }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         // il primo parametro di addListener è un Runnable, il secondo è un Excecutor
@@ -120,9 +180,12 @@ class Fotocamera : AppCompatActivity() {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
                 }
 
+            // imageCapture BETA, il vero img capture viene stabilito da setCapabilities
+            // setCapabilities analizza le informazioni della fotocamera del dispositivo, imposta
+            // le migliori impostazioni possibili (assieme anche alla torcia o altre impostazioni)
+            // e restituisce un'istanza di Builder per la fotocamera vera e propria
             imageCapture = ImageCapture.Builder()
                 .build()
-
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -131,25 +194,23 @@ class Fotocamera : AppCompatActivity() {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                var camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
-
+                // Imposta tutti i parametri della fotocamera in base a quello che supporta
+                setCapabilities(camera.cameraInfo)
+                // stacca la vecchia istanza della fotocamera e la ricrea da capo con una nuova
+                // che possiede tutte le informazioni aggiornate
+                cameraProvider.unbindAll()
+                camera = cameraProvider.bindToLifecycle(this,
+                    cameraSelector, preview, imageCapture)
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(this))
-        Log.d(TAG, "Fotocamera avviata!")
     }
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
-
-    companion object {
-        private const val TAG = "FOTOCAMERAX"
-        // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
-        private const val FILENAME_FORMAT = "dd-MM-yyyy-HH-mm-ss-SSS"
-    }
-
 }
