@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -23,8 +24,12 @@ class MainActivity : AppCompatActivity() {
             // Handle Permission granted/rejected
             var permissionGranted = true
             permissions.entries.forEach {
-                if (it.key in REQUIRED_PERMISSIONS && it.value == false)
+                val chiave = it.key
+                val valore = it.value
+                if (chiave in REQUIRED_PERMISSIONS && valore == false) {
                     permissionGranted = false
+                    Log.e("permessi", "ERRORE DI PERMESSI PER ${chiave}" )
+                }
             }
             if (!permissionGranted) {
                 finish()
@@ -72,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS =
             mutableListOf (
                 Manifest.permission.CAMERA,
+
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
