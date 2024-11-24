@@ -13,6 +13,7 @@ import android.graphics.Rect
 import android.graphics.YuvImage
 import android.media.Image
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
@@ -39,6 +40,8 @@ import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Paragraph
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -85,8 +88,10 @@ class Fotocamera : AppCompatActivity() {
         enableEdgeToEdge()
         //setContentView(R.layout.activity_fotocamera)
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
-        // bottoneScatta.setOnClickListener { createPdf("Pictures/CameraX-Image") }
-        bottoneScatta.setOnClickListener { takePhoto() }
+        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        val file = File(directory, "hello_world.pdf")
+         bottoneScatta.setOnClickListener { createPdf(file) }
+        // bottoneScatta.setOnClickListener { takePhoto() }
         startCamera()
     }
     private fun takePhoto() {
@@ -222,25 +227,33 @@ class Fotocamera : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
-    fun createPdf(filePath: String) {
-        // Crea un oggetto PdfWriter che gestisce la scrittura del PDF
-        val writer = PdfWriter(filePath)
+    fun createPdf(file: File) {
+        try {
+            // Crea un FileOutputStream
+            val fileOutputStream = FileOutputStream(file)
 
-        // Crea un PdfDocument, associandolo al PdfWriter
-        val pdfDocument = PdfDocument(writer)
+            // Crea un PdfWriter che gestisce la scrittura del PDF
+            val writer = PdfWriter(fileOutputStream)
 
-        // Crea un Document che permette di aggiungere contenuto al PDF
-        val document = Document(pdfDocument)
+            // Crea un PdfDocument associandolo al PdfWriter
+            val pdfDocument = PdfDocument(writer)
 
-        // Aggiungi un paragrafo con il testo "Hello World" al PDF
-        document.add(Paragraph("Hello World"))
+            // Crea un oggetto Document per aggiungere contenuti
+            val document = Document(pdfDocument)
 
-        // Chiudi il documento per completare la scrittura
-        document.close()
+            // Aggiungi un paragrafo con il testo "Hello World" al PDF
+            document.add(Paragraph("Paragrafo scritto tramite iText dal codice del progettino di ambienti"))
 
-        Toast.makeText(baseContext, "PDF creato con successo", Toast.LENGTH_SHORT).show()
+            // Chiudi il documento per completare la scrittura
+            document.close()
+
+            // Mostra un messaggio di successo
+            Toast.makeText(baseContext, "PDF creato con successo", Toast.LENGTH_SHORT).show()
+        } catch (exc: Exception) {
+            // Gestione degli errori
+            Toast.makeText(baseContext, "Errore nella creazione del PDF", Toast.LENGTH_SHORT).show()
+        }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
