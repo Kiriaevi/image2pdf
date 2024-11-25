@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-22T16:19:23.675731671Z">
+        <DropdownSelection timestamp="2024-11-25T17:22:49.319568697Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=ZY32HKDPXR" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/home/aetoropc/.android/avd/Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>

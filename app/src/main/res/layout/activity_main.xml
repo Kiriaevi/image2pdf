@@ -4,32 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/grey"
+    app:cornerRadius="300dp"
+    >
 
     <Button
         android:id="@+id/bottone1"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:backgroundTint="@color/red"
-        android:text="Crea PDF"
+        android:text="Condividi PDF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.84"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintVertical_bias="0.12"
+        />
 
     <Button
         android:id="@+id/bottone2"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:backgroundTint="@color/red"
-        android:text="Condividi PDF"
+        android:text="Crea PDF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.12" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/pdf_svgrepo_com"
+        tools:layout_editor_absoluteX="165dp"
+        tools:layout_editor_absoluteY="558dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
