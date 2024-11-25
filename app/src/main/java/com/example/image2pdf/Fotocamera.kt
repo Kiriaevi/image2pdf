@@ -45,6 +45,7 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 // https://developer.android.com/codelabs/camerax-getting-started#1
 // NON HO FINITO, CONTINUA QUI -> https://developer.android.com/codelabs/camerax-getting-started#4
@@ -52,7 +53,6 @@ class Fotocamera : AppCompatActivity() {
     private lateinit var viewBinding: ActivityFotocameraBinding
 
     // valori relativi al ciclo di vita di una fotocamera
-
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture ?= null
     companion object {
@@ -70,28 +70,23 @@ class Fotocamera : AppCompatActivity() {
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e(TAG, "QUI ESISTO")
         super.onCreate(savedInstanceState)
-
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         enableEdgeToEdge()
-        //setContentView(R.layout.activity_fotocamera)
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val file = File(directory, "hello_world.pdf")
          // bottoneScatta.setOnClickListener { createPdf(file) }
-
-         bottoneScatta.setOnClickListener { takePhoto() }
+        cameraExecutor = Executors.newSingleThreadExecutor()
         startCamera()
+        bottoneScatta.setOnClickListener { takePhoto() }
     }
     private fun takePhoto() {
-
         // usa l'istanza di imageCapture se definita, se null allora fai un return
         // senza il return l'applicazione crasha
         // https://developer.android.com/reference/kotlin/androidx/camera/core/ImageCapture
-        val imageCapture = creaImageCapture(true) ?: return
-        this.imageCapture = imageCapture
+        val imageCapture = this.imageCapture ?: return
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.ITALY)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -147,14 +142,13 @@ class Fotocamera : AppCompatActivity() {
     }
 
     private fun updateCameraProvider() {
-        var imageCapture: ImageCapture? = null
-        imageCapture = (creaImageCapture(false))
-        this.imageCapture = imageCapture
+        this.imageCapture = creaImageCapture(false)
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        this.imageCapture = creaImageCapture(true)
         cameraProviderFuture.addListener({
-            imageCapture = creaImageCapture(true)
+            this.imageCapture
             setCameraCycle()
         }, ContextCompat.getMainExecutor(this))
     }
