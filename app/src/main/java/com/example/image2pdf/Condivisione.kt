@@ -1,6 +1,7 @@
 package com.example.image2pdf
 
 import android.app.Activity
+import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
@@ -32,6 +33,9 @@ class Condivisione : AppCompatActivity() {
             intentIm.type="image/*"
             intentIm.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
             startActivityForResult(intentIm,1)
+            val foto : ClipData? = intentIm.clipData //Il ? serve per indicare la possibilità di "Non ritorno"
+            //Se tutto va bene qui dovrei avere le foto e dopodicchè chiamare la funzione per generare il pdf
+            //Non ho capito allora a che serve il request code
         }
     }
 
