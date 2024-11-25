@@ -63,6 +63,15 @@ class Fotocamera : AppCompatActivity() {
      */
     private lateinit var viewBinding: ActivityFotocameraBinding
 
+    // valori relativi al ciclo di vita di una fotocamera
+    private val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+    private val preview = Preview.Builder()
+        .build()
+        .also {
+            it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
+        }
+
+
     private var imageCapture: ImageCapture? = null
 
     private lateinit var cameraExecutor: ExecutorService
@@ -183,50 +192,44 @@ class Fotocamera : AppCompatActivity() {
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        // il primo parametro di addListener è un Runnable, il secondo è un Excecutor
-        // In particolare l'executor è quello del main thread, mentre il runnable lo definiamo
-        // noi con le parentesi {} e chiediamo di impostare il nostro object Preview con le
-        // immagini ottenute dalla fotocamera.
         cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Preview
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
-                }
-
-            // imageCapture BETA, il vero img capture viene stabilito da setCapabilities
-            // setCapabilities analizza le informazioni della fotocamera del dispositivo, imposta
-            // le migliori impostazioni possibili (assieme anche alla torcia o altre impostazioni)
-            // e restituisce un'istanza di Builder per la fotocamera vera e propria
-            imageCapture = ImageCapture.Builder()
-                .build()
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                // Bind use cases to camera
-                var camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture)
-                // Imposta tutti i parametri della fotocamera in base a quello che supporta
-                setCapabilities(camera.cameraInfo)
-                // stacca la vecchia istanza della fotocamera e la ricrea da capo con una nuova
-                // che possiede tutte le informazioni aggiornate
-                cameraProvider.unbindAll()
-                camera = cameraProvider.bindToLifecycle(this,
-                    cameraSelector, preview, imageCapture)
-            } catch(exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
-            }
-
+            imageCapture = creaImageCapture(true)
+            setCameraCycle()
         }, ContextCompat.getMainExecutor(this))
     }
+
+    private fun creaImageCapture(primaInizializzazione: Boolean): ImageCapture?  {
+        if (primaInizializzazione) {
+            return ImageCapture.Builder()
+                .build()
+        }
+        return null
+    }
+
+    private fun setCameraCycle() {
+        try {
+            // IMPOSTO VARIABILI DI AUSILIO
+            val cameraProvider = this.cameraProviderFuture.get()
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            // Unbind use cases before rebinding
+            cameraProvider.unbindAll()
+
+            // Bind use cases to camera
+            var camera = cameraProvider.bindToLifecycle(
+                this, cameraSelector, preview, imageCapture)
+            // Imposta tutti i parametri della fotocamera in base a quello che supporta
+            setCapabilities(camera.cameraInfo)
+            // stacca la vecchia istanza della fotocamera e la ricrea da capo con una nuova
+            // che possiede tutte le informazioni aggiornate
+            cameraProvider.unbindAll()
+            camera = cameraProvider.bindToLifecycle(this,
+                cameraSelector, preview, imageCapture)
+        } catch(exc: Exception) {
+            Log.e(TAG, "Use case binding failed", exc)
+        }
+    }
+
     fun createPdf(file: File) {
         try {
             // Crea un FileOutputStream
