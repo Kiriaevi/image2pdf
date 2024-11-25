@@ -166,28 +166,7 @@ class Fotocamera : AppCompatActivity() {
 
     private fun updateCameraProvider() {
         var imageCapture: ImageCapture? = null
-        // Se possiedi la torcia e l'utente vuole utilizzarla allora attivala
-        val torcia = if (capabilities["FLASHLIGHT"] == true &&
-            richiesta_utente["FLASHLIGHT"] == true ) {
-            ImageCapture.FLASH_MODE_ON
-        } else {
-            ImageCapture.FLASH_MODE_OFF
-        }
-
-        if (capabilities["ZERO_SHUTTER_LAG"] == true) {
-            Log.e(TAG, "SIAMO NELLA MODALITÀ CON ZERO_SHUTTER")
-            @ExperimentalZeroShutterLag
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG)
-                .setFlashMode(torcia)
-                .build()
-        } else if(capabilities["ZERO_SHUTTER_LAG"] == false) {
-            Log.e(TAG, "SIAMO NELLA MODALITÀ SENZA ZERO_SHUTTER")
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .setFlashMode(torcia)
-                .build()
-        }
+        imageCapture = (creaImageCapture(false))
         this.imageCapture = imageCapture
     }
     private fun startCamera() {
@@ -203,7 +182,36 @@ class Fotocamera : AppCompatActivity() {
             return ImageCapture.Builder()
                 .build()
         }
-        return null
+        // Se possiedi la torcia e l'utente vuole utilizzarla allora attivala
+        val torcia = checkTorcia()
+        /* Se possiedi la funzione sperimentale ZERO_SHUTTER_LAG attivala,
+         altrimenti imposta la qualità migliore possibile CAPTURE_MODE_MAXIMIZE_QUALITY */
+        val captureMode: Int = setCaptureMode()
+        imageCapture = ImageCapture.Builder()
+            .setCaptureMode(captureMode)
+            .setFlashMode(torcia)
+            .build()
+        return imageCapture;
+    }
+
+    private fun setCaptureMode(): Int {
+        @ExperimentalZeroShutterLag
+        if (capabilities["ZERO_SHUTTER_LAG"] == true) {
+            Log.e(TAG, "SIAMO NELLA MODALITÀ CON ZERO_SHUTTER")
+            return ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG
+        }
+        else {
+            return ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
+        }
+    }
+
+    private fun checkTorcia(): Int {
+        return if (capabilities["FLASHLIGHT"] == true &&
+            richiesta_utente["FLASHLIGHT"] == true ) {
+            ImageCapture.FLASH_MODE_ON
+        } else {
+            ImageCapture.FLASH_MODE_OFF
+        }
     }
 
     private fun setCameraCycle() {
