@@ -8,12 +8,12 @@
     android:layout_height="match_parent"
     tools:context=".Fotocamera">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="-205dp"
-        tools:layout_editor_absoluteY="16dp">
+        tools:layout_editor_absoluteY="16dp" />
 
         <ImageButton
             android:id="@+id/imageButton10"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.876"
             app:srcCompat="@drawable/flash_svgrepo_com2" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <Button
         android:id="@+id/image_capture_button"

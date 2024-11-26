@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/pdf_svgrepo_com"
         tools:layout_editor_absoluteX="165dp"
-        tools:layout_editor_absoluteY="558dp" />
+        tools:layout_editor_absoluteY="558dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
