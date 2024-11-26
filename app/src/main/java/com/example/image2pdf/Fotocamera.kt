@@ -21,11 +21,13 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraX
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCapture.FLASH_MODE_ON
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -56,7 +58,7 @@ class Fotocamera : AppCompatActivity() {
     // valori relativi al ciclo di vita di una fotocamera
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture ?= null
-
+    private var camera: Camera?= null
     companion object {
         private const val TAG = "FOTOCAMERAX"
         // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
@@ -72,9 +74,7 @@ class Fotocamera : AppCompatActivity() {
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e(TAG, "TEST")
         super.onCreate(savedInstanceState)
-
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         enableEdgeToEdge()
@@ -98,6 +98,7 @@ class Fotocamera : AppCompatActivity() {
     }
     private fun modificaTorcia() {
         richiesta_utente["FLASHLIGHT"] = !richiesta_utente["FLASHLIGHT"]!!
+        //imageCapture?.flashMode = ImageCapture.FLASH_MODE_OFF
         updateCameraProvider()
     }
 
@@ -180,7 +181,7 @@ class Fotocamera : AppCompatActivity() {
         // crea la nuova configurazione
         this.imageCapture = creaImageCapture(false)
         // attacca la configurazione nuova con tutto aggiornato
-        cameraProvider.bindToLifecycle(this,
+        this.camera = cameraProvider.bindToLifecycle(this,
             cameraSelector, preview, this.imageCapture)
     }
     private fun startCamera() {
@@ -223,7 +224,7 @@ class Fotocamera : AppCompatActivity() {
     private fun checkTorcia(): Int {
         if (capabilities["FLASHLIGHT"] == false) {
             Toast.makeText(baseContext,
-                "La tua foto camera non supporta il FLASH",
+                "La tua fotocamera non supporta il FLASH",
                 Toast.LENGTH_SHORT).show()
         }
 
