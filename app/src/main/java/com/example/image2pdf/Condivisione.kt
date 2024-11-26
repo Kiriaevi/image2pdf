@@ -61,12 +61,12 @@ class Condivisione(nome: String) : AppCompatActivity() {
 
     /*
     Il metodo che si occupa di convertire un ImageProxy in Image, probabilmente il maggiore colpevole dei cali di prestazione
-    e della pesantezza generale del PDF, TODO: dare un'occhiata alla documentazione e vedere se si è in grado di evitare questo enorme overhead.
+    e della pesantezza generale del PDF, FIXATO(comprimere le immagini): dare un'occhiata alla documentazione e vedere se si è in grado di evitare questo enorme overhead.
      */
     private fun convertiImgProxyABitMap(img: ImageProxy): Image {
         val bitmap: Bitmap = img.toBitmap()
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         val imageData = ImageDataFactory.create(byteArray)
         return Image(imageData)
@@ -93,7 +93,6 @@ class Condivisione(nome: String) : AppCompatActivity() {
             val pdfDocument = PdfDocument(writer)
             // Crea un oggetto Document per aggiungere contenuti
             this.document = Document(pdfDocument)
-            this.document!!.add(Paragraph("Paragrafo scritto tramite iText dal codice del progettino di ambienti"))
         } catch (exc: Exception) {
             // Gestione degli errori
             Toast.makeText(baseContext, "Errore nella creazione del PDF", Toast.LENGTH_SHORT).show()
