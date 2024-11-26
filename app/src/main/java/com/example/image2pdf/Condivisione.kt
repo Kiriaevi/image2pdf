@@ -21,6 +21,8 @@ class Condivisione(val nome: String) : AppCompatActivity() {
     // nome del file
     private val file: File
 
+    // riferimento al documento, questo viene usato per scrivere paragrafi, testo e immagini
+    private var document: Document? = null
     // costruttore strano di kotlin
     init {
          this.file = File(directory, "${nome}.pdf")
@@ -28,9 +30,6 @@ class Condivisione(val nome: String) : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-
-
     }
     fun iniziaCostruzionePDF() {
         createPdf()
@@ -47,13 +46,10 @@ class Condivisione(val nome: String) : AppCompatActivity() {
             val pdfDocument = PdfDocument(writer)
 
             // Crea un oggetto Document per aggiungere contenuti
-            val document = Document(pdfDocument)
+            this.document = Document(pdfDocument)
 
-            // Aggiungi un paragrafo con il testo "Hello World" al PDF
-            document.add(Paragraph("Paragrafo scritto tramite iText dal codice del progettino di ambienti"))
+            this.document!!.add(Paragraph("Paragrafo scritto tramite iText dal codice del progettino di ambienti"))
 
-            // Chiudi il documento per completare la scrittura
-            document.close()
 
             // Mostra un messaggio di successo
             Toast.makeText(baseContext, "PDF creato con successo", Toast.LENGTH_SHORT).show()
