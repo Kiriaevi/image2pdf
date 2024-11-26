@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_marginVertical="5dp"
+    android:layout_marginHorizontal="8dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/NomePdf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NomePdf"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/Datapdf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/NomePdf"
+            android:layout_marginLeft="143dp"
+            android:text="DataPdf"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/Datapdf"
+            android:layout_marginLeft="159dp"
+            app:srcCompat="@drawable/share_svgrepo_com" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView3"
+            android:layout_marginLeft="43dp"
+            app:srcCompat="@drawable/garbage_svgrepo_com" />
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

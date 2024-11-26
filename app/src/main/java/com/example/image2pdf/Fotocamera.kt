@@ -63,11 +63,11 @@ class Fotocamera : AppCompatActivity() {
     }
     private fun impostaLogicaDeiBottoni() {
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
-        val bottoneStampa = findViewById<ImageButton>(R.id.Save)
+        //val bottoneStampa = findViewById<ImageButton>(R.id.Save)
         val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
 
         bottoneScatta.setOnClickListener { takePhoto() }
-        bottoneStampa.setOnClickListener { stampaPDF() }
+       // bottoneStampa.setOnClickListener { stampaPDF() }
         bottoneFlash.setOnClickListener { modificaTorcia() }
     }
     private fun modificaTorcia() {
@@ -75,13 +75,14 @@ class Fotocamera : AppCompatActivity() {
         //imageCapture?.flashMode = ImageCapture.FLASH_MODE_OFF
         updateCameraProvider()
     }
-
+    /*
     private fun stampaPDF() {
         val riferimentoAlCostruttorePDF: Condivisione = Condivisione("outputPDF")
-        // in questo metodo passiamo l'array di BITMAP
-        //riferimentoAlCostruttorePDF.impostaInformazioniBase()
+         in questo metodo passiamo l'array di BITMAP
+        riferimentoAlCostruttorePDF.impostaInformazioniBase()
         riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
-    }
+
+    }*/
 
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return

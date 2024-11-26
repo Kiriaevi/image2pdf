@@ -21,7 +21,7 @@ class NuovoPDF : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_condivisione)
+        setContentView(R.layout.activity_nuovopdf)
         attendiEvento()
     }
 
