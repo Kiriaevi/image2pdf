@@ -65,7 +65,10 @@ class NuovoPDF : AppCompatActivity() {
                     arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
                 }
             }
-            Toast.makeText(baseContext, "$imagesUri.itemCount", Toast.LENGTH_SHORT).show()
+            val gen=GeneratorePDF("Costruttore")
+            gen.iniziaCostruzionePDF()
+            gen.caricaImmagini(arrayOfBitmap)
+            Toast.makeText(baseContext, "${arrayOfBitmap.size}", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.image2pdf
 import android.graphics.Bitmap
 import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.camera.core.ImageProxy
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.io.source.ByteArrayOutputStream
@@ -60,6 +61,7 @@ class GeneratorePDF(nome: String) {
         }
         this.document?.close()
         Log.e(TAG, "Il documento è stato chiuso")
+        Log.e(TAG, "$directory")
     }
 
     /*
