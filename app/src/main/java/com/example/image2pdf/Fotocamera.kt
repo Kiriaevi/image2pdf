@@ -17,6 +17,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -55,6 +56,7 @@ class Fotocamera : AppCompatActivity() {
     // valori relativi al ciclo di vita di una fotocamera
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture ?= null
+
     companion object {
         private const val TAG = "FOTOCAMERAX"
         // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
@@ -70,18 +72,42 @@ class Fotocamera : AppCompatActivity() {
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.e(TAG, "TEST")
         super.onCreate(savedInstanceState)
+
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         enableEdgeToEdge()
-        val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
-        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        val file = File(directory, "hello_world.pdf")
-         // bottoneScatta.setOnClickListener { createPdf(file) }
+
+        impostaLogicaDeiBottoni()
+        /* Definisce un executor, e quindi un thread, ad eseguire in maniera asincrona una determinata azione,
+           in questo caso la gestione della fotocamera */
         cameraExecutor = Executors.newSingleThreadExecutor()
+
         startCamera()
-        bottoneScatta.setOnClickListener { takePhoto() }
+
     }
+    private fun impostaLogicaDeiBottoni() {
+        val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
+        val bottoneStampa = findViewById<Button>(R.id.stampaPDF)
+        val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
+
+        bottoneScatta.setOnClickListener { takePhoto() }
+        bottoneStampa.setOnClickListener { stampaPDF() }
+        bottoneFlash.setOnClickListener { modificaTorcia() }
+    }
+    private fun modificaTorcia() {
+        richiesta_utente["FLASHLIGHT"] = !richiesta_utente["FLASHLIGHT"]!!
+        updateCameraProvider()
+    }
+
+    private fun stampaPDF() {
+        val riferimentoAlCostruttorePDF: NuovoPdf = NuovoPdf("outputPDF")
+        // in questo metodo passiamo l'array di BITMAP
+        //riferimentoAlCostruttorePDF.impostaInformazioniBase()
+        riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
+    }
+
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return
         // senza il return l'applicazione crasha
@@ -135,14 +161,27 @@ class Fotocamera : AppCompatActivity() {
             capabilities["ZERO_SHUTTER_LAG"] = true
         if ( infoCamera.hasFlashUnit() )
             capabilities["FLASHLIGHT"] = true
-
-        // ora che conosco i dati della fotocamera in uso posso aggiornare
-        // l'oggetto Camera, per farlo richiamo la funziona updateCameraProvider()
-        updateCameraProvider()
     }
 
     private fun updateCameraProvider() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        /* camera provider fornisce un'istanza alla fotocamera, con questa siamo in grado di chiamare metodi come
+         unbind, unbindAll e bindToLifeCycle */
+        val cameraProvider = cameraProviderFuture.get()
+        var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        // associo la vista sul dispositivo alla fotocamera
+        val preview = Preview.Builder()
+            .build()
+            .also {
+                it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
+            }
+        // stacca la vecchia configurazione
+        cameraProvider.unbindAll()
+        // crea la nuova configurazione
         this.imageCapture = creaImageCapture(false)
+        // attacca la configurazione nuova con tutto aggiornato
+        cameraProvider.bindToLifecycle(this,
+            cameraSelector, preview, this.imageCapture)
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -182,71 +221,51 @@ class Fotocamera : AppCompatActivity() {
     }
 
     private fun checkTorcia(): Int {
-        return if (capabilities["FLASHLIGHT"] == true &&
-            richiesta_utente["FLASHLIGHT"] == true ) {
-            ImageCapture.FLASH_MODE_ON
-        } else {
-            ImageCapture.FLASH_MODE_OFF
+        if (capabilities["FLASHLIGHT"] == false) {
+            Toast.makeText(baseContext,
+                "La tua foto camera non supporta il FLASH",
+                Toast.LENGTH_SHORT).show()
         }
-    }
 
+        return if ( richiesta_utente["FLASHLIGHT"] == true )
+            ImageCapture.FLASH_MODE_ON
+         else
+            return ImageCapture.FLASH_MODE_OFF
+    }
+    /*
+        Definisco la preview, ovvero il luogo dell'applicazione in cui il buffer della fotocamera verrà connessa, assieme
+        al ciclo di vita della fotocamera
+    */
     private fun setCameraCycle() {
         try {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+            /* camera provider fornisce un'istanza alla fotocamera, con questa siamo in grado di chiamare metodi come
+             unbind, unbindAll e bindToLifeCycle */
+            val cameraProvider = cameraProviderFuture.get()
+            var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            // associo la vista sul dispositivo alla fotocamera
             val preview = Preview.Builder()
                 .build()
                 .also {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
                 }
-            // IMPOSTO VARIABILI DI AUSILIO
-            val cameraProvider = cameraProviderFuture.get()
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
             // Unbind use cases before rebinding
             cameraProvider.unbindAll()
-
-            // Bind use cases to camera
+            /* Con bindToLifeCycle sono in grado di legare l'istanza della mia fotocamera. La fotocamera comprende informazioni
+            come ad esempio se si vuole la torcia, quale protocollo usare (ZERO_SHUTTER_LAG), e se siamo con la fotocamera anteriore
+            o posteriore.
+            */
             var camera = cameraProvider.bindToLifecycle(
                 this, cameraSelector, preview, imageCapture)
             // Imposta tutti i parametri della fotocamera in base a quello che supporta
             setCapabilities(camera.cameraInfo)
-            /* stacca la vecchia istanza della fotocamera e la ricrea da capo con una nuova
-             che possiede tutte le informazioni aggiornate */
-            cameraProvider.unbindAll()
-            camera = cameraProvider.bindToLifecycle(this,
-                cameraSelector, preview, imageCapture)
+            updateCameraProvider()
         } catch(exc: Exception) {
             Log.e(TAG, "Use case binding failed", exc)
         }
     }
 
-    fun createPdf(file: File) {
-        try {
-            // Crea un FileOutputStream
-            val fileOutputStream = FileOutputStream(file)
 
-            // Crea un PdfWriter che gestisce la scrittura del PDF
-            val writer = PdfWriter(fileOutputStream)
-
-            // Crea un PdfDocument associandolo al PdfWriter
-            val pdfDocument = PdfDocument(writer)
-
-            // Crea un oggetto Document per aggiungere contenuti
-            val document = Document(pdfDocument)
-
-            // Aggiungi un paragrafo con il testo "Hello World" al PDF
-            document.add(Paragraph("Paragrafo scritto tramite iText dal codice del progettino di ambienti"))
-
-            // Chiudi il documento per completare la scrittura
-            document.close()
-
-            // Mostra un messaggio di successo
-            Toast.makeText(baseContext, "PDF creato con successo", Toast.LENGTH_SHORT).show()
-        } catch (exc: Exception) {
-            // Gestione degli errori
-            Toast.makeText(baseContext, "Errore nella creazione del PDF", Toast.LENGTH_SHORT).show()
-        }
-    }
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
