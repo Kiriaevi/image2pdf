@@ -38,29 +38,44 @@ class GeneratorePDF(nome: String) {
     }
     /* Prende come input una lista di ImageProxy e li converte in formati Image (compatibili con iText), successivamente
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
+    Se l'input passato è una lista di ImageProxy richiama la funzione [convertiImgProxyAImg], se è un Bitmap richiama [convertiBitMapAImg]
      */
-    fun impostaInformazioniBase(immaginiCatturate: MutableList<ImageProxy>) {
+    fun <T> caricaImmagini(immaginiCatturate: MutableList<T>) {
         var count: Int = 0
-        for(i in immaginiCatturate) {
-            aggiungiImmagine(convertiImgProxyABitMap(i))
-            aggiungiParagrafo("Immagine ${count}")
+        for (item in immaginiCatturate) {
+            when (item) {
+                is ImageProxy -> {
+                    aggiungiImmagine(convertiImgProxyAImg(item))
+                }
+                is Bitmap -> {
+                    aggiungiImmagine(convertiBitMapAImg(item))
+                }
+                else -> {
+                    Log.e(TAG, "Tipo di immagine non supportato")
+                    continue
+                }
+            }
+            aggiungiParagrafo("Immagine $count")
             count++
         }
-        this.document!!.close()
-        Log.e(TAG, "il documento è stato chiuso")
+        this.document?.close()
+        Log.e(TAG, "Il documento è stato chiuso")
     }
 
     /*
     Il metodo che si occupa di convertire un ImageProxy in Image, probabilmente il maggiore colpevole dei cali di prestazione
     e della pesantezza generale del PDF, FIXATO(comprimere le immagini): dare un'occhiata alla documentazione e vedere se si è in grado di evitare questo enorme overhead.
      */
-    private fun convertiImgProxyABitMap(img: ImageProxy): Image {
-        val bitmap: Bitmap = img.toBitmap()
+    private fun convertiBitMapAImg(bitmap: Bitmap): Image {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         val imageData = ImageDataFactory.create(byteArray)
         return Image(imageData)
+    }
+    private fun convertiImgProxyAImg(img: ImageProxy): Image {
+        val bitmap: Bitmap = img.toBitmap()
+        return convertiBitMapAImg(bitmap)
     }
 
     /* Aggiunge un paragrafo, INPUT: Stringa OUTPUT: niente */
