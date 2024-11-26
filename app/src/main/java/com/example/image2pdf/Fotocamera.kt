@@ -63,7 +63,7 @@ class Fotocamera : AppCompatActivity() {
     }
     private fun impostaLogicaDeiBottoni() {
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
-        val bottoneStampa = findViewById<Button>(R.id.stampaPDF)
+        val bottoneStampa = findViewById<ImageButton>(R.id.Save)
         val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
 
         bottoneScatta.setOnClickListener { takePhoto() }

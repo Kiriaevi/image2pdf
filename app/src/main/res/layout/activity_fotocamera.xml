@@ -17,30 +17,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/stampaPDF"
-            android:layout_width="424dp"
-            android:layout_height="76dp"
-            android:text="STAMPA PDF"
-            android:visibility="visible"
-            tools:visibility="visible" />
     </androidx.camera.view.PreviewView>
 
-        <ImageButton
-            android:id="@+id/flashButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.23"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.876"
-            app:srcCompat="@drawable/flash_svgrepo_com2" />
+    <ImageButton
+        android:id="@+id/flashButton"
+        android:layout_width="158dp"
+        android:layout_height="105dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:srcCompat="@drawable/flash_svgrepo_com2" />
 
+    <ImageButton
+        android:id="@+id/Save"
+        android:layout_width="116dp"
+        android:layout_height="103dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:srcCompat="@android:drawable/ic_menu_save" />
 
     <Button
         android:id="@+id/image_capture_button"
