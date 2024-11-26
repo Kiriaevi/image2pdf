@@ -2,15 +2,12 @@ package com.example.image2pdf
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -53,10 +50,10 @@ class MainActivity : AppCompatActivity() {
         val bottone1 = findViewById<Button>(R.id.bottone1)
         val bottone2 = findViewById<Button>(R.id.bottone2)
         bottone1.setOnClickListener {
-            cambiaActivity(NuovoPdf::class.java)
+            cambiaActivity(Condivisione::class.java)
         }
         bottone2.setOnClickListener {
-            cambiaActivity(Condivisione::class.java)
+            cambiaActivity(NuovoPDF::class.java)
         }
     }
 
