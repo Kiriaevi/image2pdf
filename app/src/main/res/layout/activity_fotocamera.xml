@@ -12,11 +12,22 @@
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-205dp"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/stampaPDF"
+            android:layout_width="424dp"
+            android:layout_height="76dp"
+            android:text="STAMPA PDF"
+            android:visibility="visible"
+            tools:visibility="visible" />
+    </androidx.camera.view.PreviewView>
 
         <ImageButton
-            android:id="@+id/imageButton10"
+            android:id="@+id/flashButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="80dp"
