@@ -19,19 +19,15 @@ import androidx.core.view.WindowInsetsCompat
 import com.itextpdf.commons.utils.Base64.InputStream
 
 class Condivisione : AppCompatActivity() {
-
-
     companion object {
         private var arrayOfBitmap = mutableListOf<Bitmap>()//Raccoglitore di foto di famiglia
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_condivisione)
         attendiEvento()
     }
-
     fun attendiEvento(){
         val bottone1 = findViewById<Button>(R.id.bc_1)
         val bottone2 = findViewById<Button>(R.id.bc_2)
@@ -45,12 +41,10 @@ class Condivisione : AppCompatActivity() {
             startActivityForResult(intentIm,1)
         }
     }
-
     fun cambiaActivity(classe :Class<out Activity>){
         val intent = Intent(this,classe)
         startActivity(intent)
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && data != null) {
