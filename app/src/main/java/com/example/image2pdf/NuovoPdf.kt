@@ -14,7 +14,7 @@ import com.itextpdf.layout.element.Paragraph
 import java.io.File
 import java.io.FileOutputStream
 
-class NuovoPdf(val nome: String) : AppCompatActivity() {
+class NuovoPdf(nome: String) : AppCompatActivity() {
 
     companion object {
         // Directory di salvataggio comune a tutte le istanze
@@ -22,6 +22,9 @@ class NuovoPdf(val nome: String) : AppCompatActivity() {
     }
     // nome del file
     private val file: File
+
+    // con il Document aggiungiamo qualunque contenuto al file
+    private var document: Document? = null
 
     // costruttore strano di kotlin
     init {
