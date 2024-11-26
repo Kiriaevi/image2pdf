@@ -1,9 +1,6 @@
 package com.example.image2pdf
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import android.content.ContentValues
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
@@ -20,8 +17,6 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -80,7 +75,7 @@ class Fotocamera : AppCompatActivity() {
         val riferimentoAlCostruttorePDF: GeneratorePDF = GeneratorePDF("outputPDF")
         // in questo metodo passiamo l'array di BITMAP
         riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
-        riferimentoAlCostruttorePDF.impostaInformazioniBase(immaginiCatturate)
+        riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate)
     }
 
     private fun takePhoto() {
