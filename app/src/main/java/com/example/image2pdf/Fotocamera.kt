@@ -15,6 +15,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -33,6 +34,7 @@ class Fotocamera : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
+    private val immaginiCatturate: MutableList<ImageProxy> = mutableListOf()
     companion object {
         private const val TAG = "FOTOCAMERAX"
         // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
@@ -57,9 +59,7 @@ class Fotocamera : AppCompatActivity() {
         /* Definisce un executor, e quindi un thread, ad eseguire in maniera asincrona una determinata azione,
            in questo caso la gestione della fotocamera */
         cameraExecutor = Executors.newSingleThreadExecutor()
-
         startCamera()
-
     }
     private fun impostaLogicaDeiBottoni() {
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
@@ -79,8 +79,9 @@ class Fotocamera : AppCompatActivity() {
     private fun stampaPDF() {
         val riferimentoAlCostruttorePDF: Condivisione = Condivisione("outputPDF")
         // in questo metodo passiamo l'array di BITMAP
-        //riferimentoAlCostruttorePDF.impostaInformazioniBase()
         riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
+        riferimentoAlCostruttorePDF.impostaInformazioniBase(immaginiCatturate)
+
     }
 
     private fun takePhoto() {
@@ -88,43 +89,23 @@ class Fotocamera : AppCompatActivity() {
         // senza il return l'applicazione crasha
         // https://developer.android.com/reference/kotlin/androidx/camera/core/ImageCapture
         val imageCapture = this.imageCapture ?: return
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.ITALY)
-            .format(System.currentTimeMillis())
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
-            }
-        }
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues)
-            .build()
-
-        // TODO: RIMUOVERE OPZIONI DI OUTPUT E SALVATAGGIO IN DIRECTORY, SALVARE FILE IN RAM, NON DISCO
         imageCapture.takePicture(
-            outputOptions,
             ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
+            object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     Toast.makeText(baseContext,
                         "Cattura foto fallita",
                         Toast.LENGTH_SHORT).show()
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
-
+                // Se lo scatto va a buon fine aggiungi l'ImageProxy di output alla lista [immaginiCatturate]
                 override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults){
+                        onCaptureSuccess(image: ImageProxy) {
                     Toast.makeText(baseContext,
                         "Cattura foto riuscita",
                         Toast.LENGTH_SHORT).show()
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
+                    Log.d(TAG, "IMMAGINE CATTURATA ${image}")
+                    immaginiCatturate.add(image)
                 }
             }
         )
