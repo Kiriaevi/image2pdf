@@ -1,72 +1,65 @@
 package com.example.image2pdf
 
-import android.app.Activity
-import android.content.ClipData
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.Button
+import android.os.Environment
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.collection.emptyLongSet
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.itextpdf.commons.utils.Base64.InputStream
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Paragraph
+import java.io.File
+import java.io.FileOutputStream
 
-class Condivisione : AppCompatActivity() {
+class Condivisione(val nome: String) : AppCompatActivity() {
+
     companion object {
-        private var arrayOfBitmap = mutableListOf<Bitmap>()//Raccoglitore di foto di famiglia
+        // Directory di salvataggio comune a tutte le istanze
+        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+    }
+    // nome del file
+    private val file: File
+
+    // costruttore strano di kotlin
+    init {
+         this.file = File(directory, "${nome}.pdf")
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_condivisione)
-        attendiEvento()
+
+
+
     }
-    fun attendiEvento(){
-        val bottone1 = findViewById<Button>(R.id.bc_1)
-        val bottone2 = findViewById<Button>(R.id.bc_2)
-        bottone1.setOnClickListener {
-            cambiaActivity(Fotocamera::class.java)
-        }
-        bottone2.setOnClickListener{
-            val intentIm = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intentIm.type="image/*"
-            intentIm.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-            startActivityForResult(intentIm,1)
-        }
+    fun iniziaCostruzionePDF() {
+        createPdf()
     }
-    fun cambiaActivity(classe :Class<out Activity>){
-        val intent = Intent(this,classe)
-        startActivity(intent)
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && data != null) {
-            // Verifica se ci sono più immagini
-            val imagesUri = data.clipData
-            arrayOfBitmap.clear()//Pulisco l'array ogni volta che acquisico cose nuove(Sarebbe meglio farlo dopo aver creato il pdf)
-            if (imagesUri != null) {
-                // Se sono state selezionate più immagini
-                for (i in 0 until imagesUri.itemCount) {
-                    val imageUri = imagesUri.getItemAt(i).uri
-                    val stream = contentResolver.openInputStream(imageUri)
-                    arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
-                }
-            } else {
-                // Se c'è una sola immagine
-                val imageUri = data.data
-                if (imageUri != null) {
-                    val stream = contentResolver.openInputStream(imageUri)
-                    arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
-                }
-            }
-            Toast.makeText(baseContext, "$imagesUri.itemCount", Toast.LENGTH_SHORT).show()
+    private fun createPdf() {
+        try {
+            // Crea un FileOutputStream
+            val fileOutputStream = FileOutputStream(this.file)
+
+            // Crea un PdfWriter che gestisce la scrittura del PDF
+            val writer = PdfWriter(fileOutputStream)
+
+            // Crea un PdfDocument associandolo al PdfWriter
+            val pdfDocument = PdfDocument(writer)
+
+            // Crea un oggetto Document per aggiungere contenuti
+            val document = Document(pdfDocument)
+
+            // Aggiungi un paragrafo con il testo "Hello World" al PDF
+            document.add(Paragraph("Paragrafo scritto tramite iText dal codice del progettino di ambienti"))
+
+            // Chiudi il documento per completare la scrittura
+            document.close()
+
+            // Mostra un messaggio di successo
+            Toast.makeText(baseContext, "PDF creato con successo", Toast.LENGTH_SHORT).show()
+        } catch (exc: Exception) {
+            // Gestione degli errori
+            Toast.makeText(baseContext, "Errore nella creazione del PDF", Toast.LENGTH_SHORT).show()
         }
     }
 }

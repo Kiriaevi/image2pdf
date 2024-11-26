@@ -20,10 +20,10 @@
         android:theme="@style/Theme.Image2pdf"
         tools:targetApi="31">
         <activity
-            android:name=".Condivisione"
+            android:name=".NuovoPDF"
             android:exported="false" />
         <activity
-            android:name=".NuovoPdf"
+            android:name=".Condivisione"
             android:exported="false" />
         <activity
             android:name=".Fotocamera"
