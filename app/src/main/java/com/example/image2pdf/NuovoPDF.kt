@@ -32,6 +32,8 @@ class NuovoPDF : AppCompatActivity() {
             cambiaActivity(Fotocamera::class.java)
         }
         bottone2.setOnClickListener{
+            //Andrà gestito il nome con un fragment da cui eventualmente invocherò il codice sottostante
+            //E lo darò come extra
             val intentIm = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             intentIm.type="image/*"
             intentIm.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
@@ -65,7 +67,7 @@ class NuovoPDF : AppCompatActivity() {
                     arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
                 }
             }
-            val gen=GeneratorePDF("Costruttore")
+            val gen=GeneratorePDF("NOMEPROVVISORIO")//Andrà inserito quello scelto dall'utente
             gen.iniziaCostruzionePDF()
             gen.caricaImmagini(arrayOfBitmap)
             Toast.makeText(baseContext, "${arrayOfBitmap.size}", Toast.LENGTH_SHORT).show()
