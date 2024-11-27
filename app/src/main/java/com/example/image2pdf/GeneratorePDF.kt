@@ -68,9 +68,9 @@ class GeneratorePDF(nome: String) {
     Il metodo che si occupa di convertire un ImageProxy in Image, probabilmente il maggiore colpevole dei cali di prestazione
     e della pesantezza generale del PDF, FIXATO(comprimere le immagini): dare un'occhiata alla documentazione e vedere se si è in grado di evitare questo enorme overhead.
      */
-    private fun convertiBitMapAImg(bitmap: Bitmap): Image {
+    fun convertiBitMapAImg(bitmap: Bitmap): Image {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         val imageData = ImageDataFactory.create(byteArray)
         return Image(imageData)
