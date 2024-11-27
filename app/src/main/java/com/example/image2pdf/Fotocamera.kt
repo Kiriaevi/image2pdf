@@ -1,6 +1,7 @@
 package com.example.image2pdf
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import android.util.Log
@@ -36,6 +37,8 @@ class Fotocamera : AppCompatActivity() {
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
     private val immaginiCatturate: MutableList<Bitmap> = mutableListOf()
+    /* work around */
+    private var count  = 1
     companion object {
         private const val TAG = "FOTOCAMERAX"
         // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
@@ -78,24 +81,23 @@ class Fotocamera : AppCompatActivity() {
     }
 
     private fun stampaPDF() {
-        val riferimentoAlCostruttorePDF: GeneratorePDF = GeneratorePDF("outputPDF")
-        // in questo metodo passiamo l'array di BITMAP
-        riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
-        riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate)
+        try {
+            val riferimentoAlCostruttorePDF = GeneratorePDF("outputPDF")
+            // in questo metodo passiamo l'array di BITMAP
+            riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
+            // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
+            riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, false)
+        } catch (exc: Exception) {
+            Log.e(TAG, "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}", exc)
+        }
     }
 
-    private fun comprimiImmagine(image: ImageProxy) : Bitmap {
-        val bitmap: Bitmap = image.toBitmap()
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, byteArrayOutputStream)
-        val compressedByteArray = byteArrayOutputStream.toByteArray()
-        return BitmapFactory.decodeStream(ByteArrayInputStream(compressedByteArray))
-    }
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return
         // senza il return l'applicazione crasha
         // https://developer.android.com/reference/kotlin/androidx/camera/core/ImageCapture
         val imageCapture = this.imageCapture ?: return
+        cameraExecutor.execute {
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageCapturedCallback() {
@@ -112,16 +114,28 @@ class Fotocamera : AppCompatActivity() {
                         "Cattura foto riuscita",
                         Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "IMMAGINE CATTURATA ${image}")
-                    /*image.toBitmap().rotate(image.imageInfo.rotationDegrees.toFloat())
-                    fun Bitmap.rotate(degrees: Float): Bitmap = Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees) }, true )
-                    */
-                    immaginiCatturate.add(comprimiImmagine(image))
-                    image.close()
+                    // ruota l'immagine, comprimila e salvala in un Bitmap
+                    val bitmapOutput: Bitmap = gestisciFoto(image)
+                    immaginiCatturate.add(bitmapOutput)
                 }
             }
         )
+        }
     }
-
+    private fun gestisciFoto(image: ImageProxy): Bitmap {
+        try {
+            val gradiRotazione = image.imageInfo.rotationDegrees
+            // ruoto l'immagine
+            val rotatedBitmap = GeneratorePDF.ruotaBitmap(image.toBitmap(), gradiRotazione.toFloat())
+            // comprimo l'immagine ruotata
+            val compressedByteArray = GeneratorePDF.comprimiBitmap(rotatedBitmap)
+            // creo il Bitmap dall'immagine ruotata e compressa
+            val compressedBitmap = BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
+            return compressedBitmap
+        } finally {
+            image.close()
+        }
+    }
     private fun setCapabilities(infoCamera: CameraInfo) {
         @ExperimentalZeroShutterLag
         if ( infoCamera.isZslSupported )
