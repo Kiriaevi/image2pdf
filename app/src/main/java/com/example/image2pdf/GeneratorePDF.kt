@@ -20,6 +20,29 @@ class GeneratorePDF(nome: String) {
         // Directory di salvataggio comune a tutte le istanze
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val TAG =  "GeneratorePDF"
+
+        /*
+        Il metodo che si occupa di convertire un Bitmap in Image o ImageProxy in Image. Opzionalmente
+        se il booleano passato è true (default) si impegna pure a comprimere l'immagine per risparmiare spazio, viceversa se
+        false non comprime nulla e si occupa solo di convertire. Può essere anche specificata la qualità desiderata, la default è 70%.
+         */
+        fun convertiBitMapAImg(bitmap: Bitmap, compress: Boolean = true, qlt: Int = 70): Image {
+            var byteArray: ByteArray? = null
+            if (compress)
+             byteArray = comprimiBitmap(bitmap, qlt)
+            val imageData = ImageDataFactory.create(byteArray)
+            return Image(imageData)
+        }
+        fun convertiImgProxyAImg(img: ImageProxy): Image {
+            val bitmap: Bitmap = img.toBitmap()
+            return convertiBitMapAImg(bitmap)
+        }
+
+        fun comprimiBitmap(bitmap: Bitmap, qlt: Int): ByteArray {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, qlt, byteArrayOutputStream)
+            return byteArrayOutputStream.toByteArray()
+        }
     }
     // nome del file
     private val file: File
@@ -36,6 +59,17 @@ class GeneratorePDF(nome: String) {
      a gravi BUG dato che il file viene chiuso dopo, suggerimento che propongo: mettere [document.close()] nel metodo [onDestroy()] */
     fun iniziaCostruzionePDF() {
         createPdf()
+    }
+    /* Aggiunge un paragrafo, INPUT: Stringa OUTPUT: niente */
+    fun aggiungiParagrafo(paragrafo: String) {
+        this.document!!.add(Paragraph(paragrafo))
+    }
+    /* Aggiunge una immagine, per la documentazione di iText va usata un Image, più info qui
+    https://github.com/itext/itext-publications-examples-java/blob/master/src/main/java/com/itextpdf/samples/sandbox/images/MultipleImages.java
+    e qui https://github.com/itext/itext-java
+     */
+    fun aggiungiImmagine(immagine: Image) {
+        this.document!!.add(immagine)
     }
     /* Prende come input una lista di ImageProxy e li converte in formati Image (compatibili con iText), successivamente
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
@@ -64,33 +98,7 @@ class GeneratorePDF(nome: String) {
         Log.e(TAG, "$directory")
     }
 
-    /*
-    Il metodo che si occupa di convertire un ImageProxy in Image, probabilmente il maggiore colpevole dei cali di prestazione
-    e della pesantezza generale del PDF, FIXATO(comprimere le immagini): dare un'occhiata alla documentazione e vedere se si è in grado di evitare questo enorme overhead.
-     */
-    fun convertiBitMapAImg(bitmap: Bitmap): Image {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-        val imageData = ImageDataFactory.create(byteArray)
-        return Image(imageData)
-    }
-    private fun convertiImgProxyAImg(img: ImageProxy): Image {
-        val bitmap: Bitmap = img.toBitmap()
-        return convertiBitMapAImg(bitmap)
-    }
 
-    /* Aggiunge un paragrafo, INPUT: Stringa OUTPUT: niente */
-    fun aggiungiParagrafo(paragrafo: String) {
-        this.document!!.add(Paragraph(paragrafo))
-    }
-    /* Aggiunge una immagine, per la documentazione di iText va usata un Image, più info qui
-    https://github.com/itext/itext-publications-examples-java/blob/master/src/main/java/com/itextpdf/samples/sandbox/images/MultipleImages.java
-    e qui https://github.com/itext/itext-java
-     */
-    fun aggiungiImmagine(immagine: Image) {
-        this.document!!.add(immagine)
-    }
     private fun createPdf() {
         try {
             // Crea un FileOutputStream
