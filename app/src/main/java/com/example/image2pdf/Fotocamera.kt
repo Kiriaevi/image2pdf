@@ -34,6 +34,7 @@ class Fotocamera : AppCompatActivity() {
 
     // valori relativi al ciclo di vita di una fotocamera
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var pdfExecutor: ExecutorService
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
     private val immaginiCatturate: MutableList<Bitmap> = mutableListOf()
@@ -62,7 +63,9 @@ class Fotocamera : AppCompatActivity() {
         impostaLogicaDeiBottoni()
         /* Definisce un executor, e quindi un thread, ad eseguire in maniera asincrona una determinata azione,
            in questo caso la gestione della fotocamera */
-        cameraExecutor = Executors.newSingleThreadExecutor()
+        cameraExecutor = Executors.newCachedThreadPool()
+        // Thread che esegue la compilazione del pdf
+        pdfExecutor = Executors.newSingleThreadExecutor()
         startCamera()
     }
     private fun impostaLogicaDeiBottoni() {
@@ -82,16 +85,26 @@ class Fotocamera : AppCompatActivity() {
 
     private fun stampaPDF() {
         try {
-            val riferimentoAlCostruttorePDF = GeneratorePDF("outputPDF")
-            // in questo metodo passiamo l'array di BITMAP
-            riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
-            // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
-            /** TODO: RICHIEDO LA TUA ATTENZIONE AETORO-AE: io qui ho impostato COMPRESS = true, quindi lui comprime, però se vai
-             * alla funzione gestioneFoto, noti che lì già effettuo una compressione, mi viene da pensare che doppia compressione porti
-             * a una qualità in credibilmente di merda, eppure si vede molto bene il pdf finale e con 9 immagini pesa sui 12 mb anziché 102
-             * come se disattivi la compressione qui (in teoria) ridondante, idee? */
-            riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true)
-        } catch (exc: Exception) {
+            // Todo: migliorare questo if con qualche funzione di kotlin specifica ( ?, !!, ?? )
+            if (pdfExecutor == null) {
+                Log.e(TAG, "ERRORE, IL THREAD CHE STAMPA IL PDF NON È INIZIALIZZATO")
+                throw Exception("ERRORE, IL THREAD CHE STAMPA IL PDF NON È INIZIALIZZATO")
+            }
+            // il PDF viene compilato concorrentemente da un thread a parte
+            pdfExecutor.execute {
+                val riferimentoAlCostruttorePDF = GeneratorePDF("outputPDF")
+                // in questo metodo passiamo l'array di BITMAP
+                riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
+                // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
+                /** TODO: RICHIEDO LA TUA ATTENZIONE AETORO-AE: io qui ho impostato COMPRESS = true, quindi lui comprime, però se vai
+                 * alla funzione gestioneFoto, noti che lì già effettuo una compressione, mi viene da pensare che doppia compressione porti
+                 * a una qualità in credibilmente di merda, eppure si vede molto bene il pdf finale e con 9 immagini pesa sui 12 mb anziché 102
+                 * come se disattivi la compressione qui (in teoria) ridondante, idee? */
+                riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true)
+                Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
+            }
+        }
+        catch (exc: Exception) {
             Log.e(TAG, "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}", exc)
         }
     }
@@ -101,6 +114,11 @@ class Fotocamera : AppCompatActivity() {
         // senza il return l'applicazione crasha
         // https://developer.android.com/reference/kotlin/androidx/camera/core/ImageCapture
         val imageCapture = this.imageCapture ?: return
+        if (cameraExecutor == null) {
+            Log.e(TAG, "ERRORE, IL THREAD CHE FA LE FOTO NON È INIZIALIZZATO")
+            throw Exception("ERRORE, IL THREAD CHE FA LE FOTO NON È INIZIALIZZATO")
+        }
+
         cameraExecutor.execute {
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(this),
