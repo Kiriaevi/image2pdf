@@ -99,6 +99,9 @@ class Fotocamera : AppCompatActivity() {
                         "Cattura foto riuscita",
                         Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "IMMAGINE CATTURATA ${image}")
+                    /*image.toBitmap().rotate(image.imageInfo.rotationDegrees.toFloat())
+                    fun Bitmap.rotate(degrees: Float): Bitmap = Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees) }, true )
+                    */
                     immaginiCatturate.add(image)
                 }
             }
