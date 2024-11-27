@@ -86,7 +86,11 @@ class Fotocamera : AppCompatActivity() {
             // in questo metodo passiamo l'array di BITMAP
             riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
             // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
-            riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, false)
+            /** TODO: RICHIEDO LA TUA ATTENZIONE AETORO-AE: io qui ho impostato COMPRESS = true, quindi lui comprime, però se vai
+             * alla funzione gestioneFoto, noti che lì già effettuo una compressione, mi viene da pensare che doppia compressione porti
+             * a una qualità in credibilmente di merda, eppure si vede molto bene il pdf finale e con 9 immagini pesa sui 12 mb anziché 102
+             * come se disattivi la compressione qui (in teoria) ridondante, idee? */
+            riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true)
         } catch (exc: Exception) {
             Log.e(TAG, "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}", exc)
         }
