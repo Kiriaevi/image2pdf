@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import androidx.camera.core.ImageProxy
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.io.source.ByteArrayOutputStream
@@ -22,12 +21,12 @@ class GeneratorePDF(nome: String) {
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val TAG =  "GeneratorePDF"
 
-        /*
+        /**
         Il metodo che si occupa di convertire un Bitmap in Image o ImageProxy in Image. Opzionalmente
         se il booleano passato è true (default) si impegna pure a comprimere l'immagine per risparmiare spazio, viceversa se
         false non comprime nulla e si occupa solo di convertire. Può essere anche specificata la qualità desiderata, la default è 70%.
          */
-        fun convertiBitMapAImg(bitmap: Bitmap, compress: Boolean = true, qlt: Int = 70): Image {
+        fun convertiBitMapAImg(bitmap: Bitmap, compress: Boolean, qlt: Int): Image {
             var byteArray: ByteArray? = null
             if (compress)
              byteArray = comprimiBitmap(bitmap, qlt)
@@ -40,7 +39,7 @@ class GeneratorePDF(nome: String) {
             val imageData = ImageDataFactory.create(byteArray)
             return Image(imageData)
         }
-        fun convertiImgProxyAImg(img: ImageProxy, compress: Boolean = true, qlt: Int = 70): Image {
+        fun convertiImgProxyAImg(img: ImageProxy, compress: Boolean, qlt: Int = 70): Image {
             val bitmap: Bitmap = img.toBitmap()
             return convertiBitMapAImg(bitmap, compress, qlt)
         }
@@ -72,7 +71,7 @@ class GeneratorePDF(nome: String) {
     init {
         this.file = File(directory, "${nome}.pdf")
     }
-    /* imposta l'attributo [document] del documento che si sta modificando in modo da avere un riferimento
+    /** imposta l'attributo [document] del documento che si sta modificando in modo da avere un riferimento
      al file ATTENZIONE POSSIBILE BUG: il documento viene chiuso in [impostaInformazioniBase()] questo può portare
      a gravi BUG dato che il file viene chiuso dopo, suggerimento che propongo: mettere [document.close()] nel metodo [onDestroy()] */
     fun iniziaCostruzionePDF() {
@@ -82,26 +81,26 @@ class GeneratorePDF(nome: String) {
     fun aggiungiParagrafo(paragrafo: String) {
         this.document!!.add(Paragraph(paragrafo))
     }
-    /* Aggiunge una immagine, per la documentazione di iText va usata un Image, più info qui
+    /** Aggiunge una immagine, per la documentazione di iText va usata un Image, più info qui
     https://github.com/itext/itext-publications-examples-java/blob/master/src/main/java/com/itextpdf/samples/sandbox/images/MultipleImages.java
     e qui https://github.com/itext/itext-java
      */
     fun aggiungiImmagine(immagine: Image) {
         this.document!!.add(immagine)
     }
-    /* Prende come input una lista di ImageProxy e li converte in formati Image (compatibili con iText), successivamente
+    /** Prende come input una lista di ImageProxy e li converte in formati Image (compatibili con iText), successivamente
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
     Se l'input passato è una lista di ImageProxy richiama la funzione [convertiImgProxyAImg], se è un Bitmap richiama [convertiBitMapAImg]
      */
-    fun <T> caricaImmagini(immaginiCatturate: MutableList<T>) {
+    fun <T> caricaImmagini(immaginiCatturate: MutableList<T>, compress: Boolean = true, qlt: Int = 70) {
         var count: Int = 0
         for (item in immaginiCatturate) {
             when (item) {
                 is ImageProxy -> {
-                    aggiungiImmagine(convertiImgProxyAImg(item))
+                    aggiungiImmagine(convertiImgProxyAImg(item, compress, qlt))
                 }
                 is Bitmap -> {
-                    aggiungiImmagine(convertiBitMapAImg(item))
+                    aggiungiImmagine(convertiBitMapAImg(item,compress, qlt))
                 }
                 else -> {
                     Log.e(TAG, "Tipo di immagine non supportato")
@@ -111,12 +110,17 @@ class GeneratorePDF(nome: String) {
             aggiungiParagrafo("Immagine $count")
             count++
         }
-        this.document?.close()
-        Log.e(TAG, "Il documento è stato chiuso")
-        Log.e(TAG, "$directory")
+        closePdf()
     }
 
-
+    private fun closePdf() {
+        try {
+            this.document?.close()
+            Log.e(TAG, "PDF chiuso correttamente")
+        } catch (exc: Exception) {
+            Log.e(TAG, "Il documento non è stato chiuso correttamente: ${exc}", exc)
+        }
+    }
     private fun createPdf() {
         try {
             // Crea un FileOutputStream
