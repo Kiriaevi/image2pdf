@@ -1,6 +1,7 @@
 package com.example.image2pdf
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
@@ -30,18 +31,35 @@ class GeneratorePDF(nome: String) {
             var byteArray: ByteArray? = null
             if (compress)
              byteArray = comprimiBitmap(bitmap, qlt)
+            else {
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                byteArray = byteArrayOutputStream.toByteArray()
+            }
+
             val imageData = ImageDataFactory.create(byteArray)
             return Image(imageData)
         }
-        fun convertiImgProxyAImg(img: ImageProxy): Image {
+        fun convertiImgProxyAImg(img: ImageProxy, compress: Boolean = true, qlt: Int = 70): Image {
             val bitmap: Bitmap = img.toBitmap()
-            return convertiBitMapAImg(bitmap)
+            return convertiBitMapAImg(bitmap, compress, qlt)
         }
 
-        fun comprimiBitmap(bitmap: Bitmap, qlt: Int): ByteArray {
+        fun comprimiBitmap(bitmap: Bitmap, qlt: Int = 70): ByteArray {
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, qlt, byteArrayOutputStream)
             return byteArrayOutputStream.toByteArray()
+        }
+
+        /**
+         * Funzione di ausilio che preleva un bitmap in ingress e lo ruota di [gradiRotazione]
+         * esempio: ruotaBitmap(bitmap, 90f) -> ruota il bitmap di 90 gradi e restituisce un nuovo formato bitmap
+         */
+        fun ruotaBitmap(bitmap: Bitmap, gradiRotazione: Float): Bitmap {
+            val matrix = Matrix()
+            matrix.postRotate(gradiRotazione)
+            val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            return rotatedBitmap
         }
     }
     // nome del file
