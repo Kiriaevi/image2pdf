@@ -101,8 +101,9 @@ class Fotocamera : AppCompatActivity() {
                  * a una qualità in credibilmente di merda, eppure si vede molto bene il pdf finale e con 9 immagini pesa sui 12 mb anziché 102
                  * come se disattivi la compressione qui (in teoria) ridondante, idee? */
                 riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true)
-                Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
             }
+            Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
+            Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
         }
         catch (exc: Exception) {
             Log.e(TAG, "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}", exc)
@@ -138,7 +139,9 @@ class Fotocamera : AppCompatActivity() {
                     Log.d(TAG, "IMMAGINE CATTURATA ${image}")
                     // ruota l'immagine, comprimila e salvala in un Bitmap
                     val bitmapOutput: Bitmap = gestisciFoto(image)
-                    immaginiCatturate.add(bitmapOutput)
+                    synchronized(immaginiCatturate) {
+                        immaginiCatturate.add(bitmapOutput)
+                    }
                     /** TODO: work around */
                     if ( count % 3 == 0)
                         updateCameraProvider()
