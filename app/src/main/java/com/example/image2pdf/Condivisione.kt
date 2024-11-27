@@ -1,22 +1,11 @@
 package com.example.image2pdf
 
 import android.os.Bundle
-import android.os.Environment
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.itextpdf.kernel.pdf.PdfDocument
-import com.itextpdf.kernel.pdf.PdfWriter
-import com.itextpdf.layout.Document
-import com.itextpdf.layout.element.Paragraph
-import java.io.File
-import java.io.FileOutputStream
 
-//TODO SPOSTARE IL CAZZO DI CODICE (Giangiu è il tuo momento)
-//Tolto parametro alla classe perchè creava conflitti giustamente
 class Condivisione : AppCompatActivity() {
 
     //In dataList per ora ci metto i dati artificiali, appena riusciremo automatizzeremo l'ingresso
