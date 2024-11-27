@@ -37,7 +37,7 @@ class Fotocamera : AppCompatActivity() {
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
     private val immaginiCatturate: MutableList<Bitmap> = mutableListOf()
-    /* work around */
+    /** TODO: work around */
     private var count  = 1
     companion object {
         private const val TAG = "FOTOCAMERAX"
@@ -117,6 +117,10 @@ class Fotocamera : AppCompatActivity() {
                     // ruota l'immagine, comprimila e salvala in un Bitmap
                     val bitmapOutput: Bitmap = gestisciFoto(image)
                     immaginiCatturate.add(bitmapOutput)
+                    /** TODO: work around */
+                    if ( count % 3 == 0)
+                        updateCameraProvider()
+                    count++
                 }
             }
         )
