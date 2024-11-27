@@ -1,4 +1,6 @@
 package com.example.image2pdf
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import android.util.Log
@@ -17,6 +19,10 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
+import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.io.source.ByteArrayOutputStream
+import com.itextpdf.layout.element.Image
+import java.io.ByteArrayInputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -29,7 +35,7 @@ class Fotocamera : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
-    private val immaginiCatturate: MutableList<ImageProxy> = mutableListOf()
+    private val immaginiCatturate: MutableList<Bitmap> = mutableListOf()
     companion object {
         private const val TAG = "FOTOCAMERAX"
         // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
@@ -78,6 +84,13 @@ class Fotocamera : AppCompatActivity() {
         riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate)
     }
 
+    private fun comprimiImmagine(image: ImageProxy) : Bitmap {
+        val bitmap: Bitmap = image.toBitmap()
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, byteArrayOutputStream)
+        val compressedByteArray = byteArrayOutputStream.toByteArray()
+        return BitmapFactory.decodeStream(ByteArrayInputStream(compressedByteArray))
+    }
     private fun takePhoto() {
         // usa l'istanza di imageCapture se definita, se null allora fai un return
         // senza il return l'applicazione crasha
@@ -102,7 +115,8 @@ class Fotocamera : AppCompatActivity() {
                     /*image.toBitmap().rotate(image.imageInfo.rotationDegrees.toFloat())
                     fun Bitmap.rotate(degrees: Float): Bitmap = Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees) }, true )
                     */
-                    immaginiCatturate.add(image)
+                    immaginiCatturate.add(comprimiImmagine(image))
+                    image.close()
                 }
             }
         )
