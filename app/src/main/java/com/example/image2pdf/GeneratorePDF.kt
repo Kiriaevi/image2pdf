@@ -123,11 +123,9 @@ class GeneratorePDF(nome: String) {
     }
     private fun createPdf() {
         try {
-            // Crea un FileOutputStream
             val fileOutputStream = FileOutputStream(this.file)
             // Crea un PdfWriter che gestisce la scrittura del PDF
             val writer = PdfWriter(fileOutputStream)
-            // Crea un PdfDocument associandolo al PdfWriter
             val pdfDocument = PdfDocument(writer)
             // Crea un oggetto Document per aggiungere contenuti
             this.document = Document(pdfDocument)
