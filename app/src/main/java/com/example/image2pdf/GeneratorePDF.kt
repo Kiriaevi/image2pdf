@@ -62,15 +62,12 @@ class GeneratorePDF(nome: String) {
         }
     }
     // nome del file
-    private val file: File
+    private val file: File  =File(directory, "${nome}.pdf")
     // Immagini passati in input
     // private val immaginiCatturate: MutableList<ImageProxy> = mutableListOf()
     // riferimento al documento, questo viene usato per scrivere paragrafi, testo e immagini
     private var document: Document? = null
-    // costruttore strano di kotlin
-    init {
-        this.file = File(directory, "${nome}.pdf")
-    }
+
     /** imposta l'attributo [document] del documento che si sta modificando in modo da avere un riferimento
      al file ATTENZIONE POSSIBILE BUG: il documento viene chiuso in [impostaInformazioniBase()] questo può portare
      a gravi BUG dato che il file viene chiuso dopo, suggerimento che propongo: mettere [document.close()] nel metodo [onDestroy()] */
@@ -92,7 +89,7 @@ class GeneratorePDF(nome: String) {
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
     Se l'input passato è una lista di ImageProxy richiama la funzione [convertiImgProxyAImg], se è un Bitmap richiama [convertiBitMapAImg]
      */
-    fun <T> caricaImmagini(immaginiCatturate: MutableList<T>, compress: Boolean = true, qlt: Int = 70) {
+    fun <T> caricaImmagini(immaginiCatturate: List<T>, compress: Boolean = true, qlt: Int = 70) {
         var count: Int = 0
         for (item in immaginiCatturate) {
             when (item) {
@@ -112,7 +109,6 @@ class GeneratorePDF(nome: String) {
         }
         closePdf()
     }
-
     private fun closePdf() {
         try {
             this.document?.close()

@@ -43,10 +43,7 @@ class MainActivity : AppCompatActivity() {
             requestPermissions()
         }
     }
-
     fun attendiEvento(){
-
-
         val bottone1 = findViewById<Button>(R.id.bottone1)
         val bottone2 = findViewById<Button>(R.id.bottone2)
         bottone1.setOnClickListener {
@@ -56,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             cambiaActivity(NuovoPDF::class.java)
         }
     }
-
     fun cambiaActivity(classe :Class<out Activity>){
         val intent = Intent(this,classe)
         startActivity(intent)
@@ -74,10 +70,10 @@ class MainActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS =
             mutableListOf (
                 Manifest.permission.CAMERA,
-
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    add(Manifest.permission.READ_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
     }
