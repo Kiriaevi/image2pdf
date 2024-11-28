@@ -1,4 +1,5 @@
 package com.example.image2pdf
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -69,20 +70,27 @@ class Fotocamera : AppCompatActivity() {
         val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
 
         bottoneScatta.setOnClickListener { takePhoto() }
-        bottoneStampa.setOnClickListener { stampaPDF() }
+        bottoneStampa.setOnClickListener { richiediNome() }
         bottoneFlash.setOnClickListener { modificaTorcia() }
     }
+
+    //Questa funzione serve per richiamare l'activity che chiederà il nome per creare il pdf
+    private fun richiediNome(){
+        val actRes=Intent(this,SceltaNome::class.java)
+        startActivityForResult(actRes,1)
+    }
+
     private fun modificaTorcia() {
         richiesta_utente["FLASHLIGHT"] = !richiesta_utente["FLASHLIGHT"]!!
         updateCameraProvider()
     }
 
-    private fun stampaPDF() {
+    private fun stampaPDF(nomePdf : String) {
         try {
             // Todo: migliorare questo if con qualche funzione di kotlin specifica ( ?, !!, ?? )
             // il PDF viene compilato concorrentemente da un thread a parte
             pdfExecutor.execute {
-                val riferimentoAlCostruttorePDF = GeneratorePDF("outputPDF")
+                val riferimentoAlCostruttorePDF = GeneratorePDF(nomePdf)
                 riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
                 // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
                 /** TODO: RICHIEDO LA TUA ATTENZIONE AETORO-AE: io qui ho impostato COMPRESS = true, quindi lui comprime, però se vai
@@ -264,6 +272,14 @@ class Fotocamera : AppCompatActivity() {
         pdfExecutor.shutdown()
     }
 
-
-
+    //Questa serve per gestire il nome da inserire (Non ho inserito le robe multithread //TODO KIRIAEVI NON HO GESTITO LE ROBE CONCORRENTI, MA NON PERNSO CHE SIA NECESSARIO
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 1 && data != null){
+            val ris = data.getStringExtra("RITORNO")
+            if(ris!=null){
+                stampaPDF(ris)
+            }
+        }
+    }
 }

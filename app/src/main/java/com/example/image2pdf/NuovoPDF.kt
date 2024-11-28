@@ -33,13 +33,10 @@ class NuovoPDF : AppCompatActivity() {
             cambiaActivity(Fotocamera::class.java)
         }
         bottone2.setOnClickListener{
-            //Andrà gestito il nome con un fragment da cui eventualmente invocherò il codice sottostante
-            //E lo darò come extra
             val intentIm = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             intentIm.type="image/*"
             intentIm.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
             startActivityForResult(intentIm,1)
-
         }
 
     }
@@ -49,6 +46,9 @@ class NuovoPDF : AppCompatActivity() {
         startActivity(intent)
     }
 
+
+    //Req=1 gestisce l'intent implicito
+    //Req=2 gestisce il ritorno del nome
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && data != null) {
