@@ -278,7 +278,8 @@ class Fotocamera : AppCompatActivity() {
         if(requestCode == 1 && data != null){
             val ris = data.getStringExtra("RITORNO")
             if(ris!=null){
-                stampaPDF(ris)
+                if(ris!="")
+                    stampaPDF(ris)
             }
         }
     }

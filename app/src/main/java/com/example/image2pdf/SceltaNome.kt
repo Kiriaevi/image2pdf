@@ -21,7 +21,7 @@ class SceltaNome : AppCompatActivity() {
         accetta.setOnClickListener {
             val testo = findViewById<TextView>(R.id.fragText1)
             if(testo.text.toString()=="")
-                Toast.makeText(this,"Inserisci un nome valido",Toast.LENGTH_SHORT)
+                Toast.makeText(this,"Inserisci un nome valido",Toast.LENGTH_SHORT).show()
             else{
                 resultintent.putExtra("RITORNO",testo.text.toString())
                 setResult(RESULT_OK, resultintent)
