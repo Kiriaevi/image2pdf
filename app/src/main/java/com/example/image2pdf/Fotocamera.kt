@@ -63,7 +63,7 @@ class Fotocamera : AppCompatActivity() {
         impostaLogicaDeiBottoni()
         /* Definisce un executor, e quindi un thread, ad eseguire in maniera asincrona una determinata azione,
            in questo caso la gestione della fotocamera */
-        cameraExecutor = Executors.newCachedThreadPool()
+        cameraExecutor = Executors.newSingleThreadExecutor()
         // Thread che esegue la compilazione del pdf
         pdfExecutor = Executors.newSingleThreadExecutor()
         startCamera()
@@ -93,7 +93,6 @@ class Fotocamera : AppCompatActivity() {
             // il PDF viene compilato concorrentemente da un thread a parte
             pdfExecutor.execute {
                 val riferimentoAlCostruttorePDF = GeneratorePDF("outputPDF")
-                // in questo metodo passiamo l'array di BITMAP
                 riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
                 // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
                 /** TODO: RICHIEDO LA TUA ATTENZIONE AETORO-AE: io qui ho impostato COMPRESS = true, quindi lui comprime, però se vai
@@ -106,7 +105,9 @@ class Fotocamera : AppCompatActivity() {
             Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
         }
         catch (exc: Exception) {
-            Log.e(TAG, "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}", exc)
+            val message = "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}"
+            Toast.makeText(baseContext, "${message}", Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "${message}: ${exc}", exc)
         }
     }
 
@@ -119,7 +120,6 @@ class Fotocamera : AppCompatActivity() {
             Log.e(TAG, "ERRORE, IL THREAD CHE FA LE FOTO NON È INIZIALIZZATO")
             throw Exception("ERRORE, IL THREAD CHE FA LE FOTO NON È INIZIALIZZATO")
         }
-
         cameraExecutor.execute {
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(this),
