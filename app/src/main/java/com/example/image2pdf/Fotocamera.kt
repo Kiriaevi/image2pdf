@@ -91,6 +91,7 @@ class Fotocamera : AppCompatActivity() {
                  * come se disattivi la compressione qui (in teoria) ridondante, idee? */
                 riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate.toList(), true)
             }
+            immaginiCatturate.clear()
             Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
             Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
         }

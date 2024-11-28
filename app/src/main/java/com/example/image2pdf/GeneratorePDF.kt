@@ -39,17 +39,11 @@ class GeneratorePDF(nome: String) {
             val imageData = ImageDataFactory.create(byteArray)
             return Image(imageData)
         }
-        fun convertiImgProxyAImg(img: ImageProxy, compress: Boolean, qlt: Int = 70): Image {
-            val bitmap: Bitmap = img.toBitmap()
-            return convertiBitMapAImg(bitmap, compress, qlt)
-        }
-
         fun comprimiBitmap(bitmap: Bitmap, qlt: Int = 70): ByteArray {
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, qlt, byteArrayOutputStream)
             return byteArrayOutputStream.toByteArray()
         }
-
         /**
          * Funzione di ausilio che preleva un bitmap in ingress e lo ruota di [gradiRotazione]
          * esempio: ruotaBitmap(bitmap, 90f) -> ruota il bitmap di 90 gradi e restituisce un nuovo formato bitmap
@@ -89,13 +83,12 @@ class GeneratorePDF(nome: String) {
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
     Se l'input passato è una lista di ImageProxy richiama la funzione [convertiImgProxyAImg], se è un Bitmap richiama [convertiBitMapAImg]
      */
-    fun <T> caricaImmagini(immaginiCatturate: List<T>, compress: Boolean = true, qlt: Int = 70) {
+    fun caricaImmagini(immaginiCatturate: List<Bitmap>, compress: Boolean = true, qlt: Int = 70) {
         var count: Int = 0
+        // qui fai la deep copy
+
         for (item in immaginiCatturate) {
             when (item) {
-                is ImageProxy -> {
-                    aggiungiImmagine(convertiImgProxyAImg(item, compress, qlt))
-                }
                 is Bitmap -> {
                     aggiungiImmagine(convertiBitMapAImg(item,compress, qlt))
                 }
