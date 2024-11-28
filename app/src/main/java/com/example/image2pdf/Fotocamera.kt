@@ -24,6 +24,8 @@ import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.io.source.ByteArrayOutputStream
 import com.itextpdf.layout.element.Image
 import java.io.ByteArrayInputStream
+import java.net.Socket
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -33,17 +35,15 @@ class Fotocamera : AppCompatActivity() {
     private lateinit var viewBinding: ActivityFotocameraBinding
 
     // valori relativi al ciclo di vita di una fotocamera
-    private lateinit var cameraExecutor: ExecutorService
-    private lateinit var pdfExecutor: ExecutorService
+    private var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+    private var pdfExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
-    private val immaginiCatturate: MutableList<Bitmap> = mutableListOf()
+    private val immaginiCatturate: CopyOnWriteArrayList<Bitmap> = CopyOnWriteArrayList()
     /** TODO: work around */
     private var count  = 1
     companion object {
         private const val TAG = "FOTOCAMERAX"
-        // ci serve nella funzione takePhoto(), per  salvare le immagini con un timestamp
-        private const val FILENAME_FORMAT = "dd-MM-yyyy-HH-mm-ss-SSS"
         private val capabilities: MutableMap<String, Boolean> = mutableMapOf(
             "ZERO_SHUTTER_LAG" to false,
             "FLASHLIGHT" to false
@@ -61,11 +61,6 @@ class Fotocamera : AppCompatActivity() {
         enableEdgeToEdge()
 
         impostaLogicaDeiBottoni()
-        /* Definisce un executor, e quindi un thread, ad eseguire in maniera asincrona una determinata azione,
-           in questo caso la gestione della fotocamera */
-        cameraExecutor = Executors.newSingleThreadExecutor()
-        // Thread che esegue la compilazione del pdf
-        pdfExecutor = Executors.newSingleThreadExecutor()
         startCamera()
     }
     private fun impostaLogicaDeiBottoni() {
@@ -79,17 +74,12 @@ class Fotocamera : AppCompatActivity() {
     }
     private fun modificaTorcia() {
         richiesta_utente["FLASHLIGHT"] = !richiesta_utente["FLASHLIGHT"]!!
-        //imageCapture?.flashMode = ImageCapture.FLASH_MODE_OFF
         updateCameraProvider()
     }
 
     private fun stampaPDF() {
         try {
             // Todo: migliorare questo if con qualche funzione di kotlin specifica ( ?, !!, ?? )
-            if (pdfExecutor == null) {
-                Log.e(TAG, "ERRORE, IL THREAD CHE STAMPA IL PDF NON È INIZIALIZZATO")
-                throw Exception("ERRORE, IL THREAD CHE STAMPA IL PDF NON È INIZIALIZZATO")
-            }
             // il PDF viene compilato concorrentemente da un thread a parte
             pdfExecutor.execute {
                 val riferimentoAlCostruttorePDF = GeneratorePDF("outputPDF")
@@ -99,7 +89,7 @@ class Fotocamera : AppCompatActivity() {
                  * alla funzione gestioneFoto, noti che lì già effettuo una compressione, mi viene da pensare che doppia compressione porti
                  * a una qualità in credibilmente di merda, eppure si vede molto bene il pdf finale e con 9 immagini pesa sui 12 mb anziché 102
                  * come se disattivi la compressione qui (in teoria) ridondante, idee? */
-                riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true)
+                riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate.toList(), true)
             }
             Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
             Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
@@ -116,10 +106,6 @@ class Fotocamera : AppCompatActivity() {
         // senza il return l'applicazione crasha
         // https://developer.android.com/reference/kotlin/androidx/camera/core/ImageCapture
         val imageCapture = this.imageCapture ?: return
-        if (cameraExecutor == null) {
-            Log.e(TAG, "ERRORE, IL THREAD CHE FA LE FOTO NON È INIZIALIZZATO")
-            throw Exception("ERRORE, IL THREAD CHE FA LE FOTO NON È INIZIALIZZATO")
-        }
         cameraExecutor.execute {
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(this),
@@ -139,9 +125,7 @@ class Fotocamera : AppCompatActivity() {
                     Log.d(TAG, "IMMAGINE CATTURATA ${image}")
                     // ruota l'immagine, comprimila e salvala in un Bitmap
                     val bitmapOutput: Bitmap = gestisciFoto(image)
-                    synchronized(immaginiCatturate) {
-                        immaginiCatturate.add(bitmapOutput)
-                    }
+                    immaginiCatturate.add(bitmapOutput)
                     /** TODO: work around */
                     if ( count % 3 == 0)
                         updateCameraProvider()
@@ -252,7 +236,7 @@ class Fotocamera : AppCompatActivity() {
             /* camera provider fornisce un'istanza alla fotocamera, con questa siamo in grado di chiamare metodi come
              unbind, unbindAll e bindToLifeCycle */
             val cameraProvider = cameraProviderFuture.get()
-            var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             // associo la vista sul dispositivo alla fotocamera
             val preview = Preview.Builder()
                 .build()
@@ -265,7 +249,7 @@ class Fotocamera : AppCompatActivity() {
             come ad esempio se si vuole la torcia, quale protocollo usare (ZERO_SHUTTER_LAG), e se siamo con la fotocamera anteriore
             o posteriore.
             */
-            var camera = cameraProvider.bindToLifecycle(
+            val camera = cameraProvider.bindToLifecycle(
                 this, cameraSelector, preview, imageCapture)
             // Imposta tutti i parametri della fotocamera in base a quello che supporta
             setCapabilities(camera.cameraInfo)
