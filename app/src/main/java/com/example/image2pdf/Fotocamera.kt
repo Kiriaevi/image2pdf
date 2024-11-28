@@ -263,4 +263,7 @@ class Fotocamera : AppCompatActivity() {
         cameraExecutor.shutdown()
         pdfExecutor.shutdown()
     }
+
+
+
 }

@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 class NuovoPDF : AppCompatActivity() {
 
-
     companion object {
         private var arrayOfBitmap = mutableListOf<Bitmap>()//Raccoglitore di foto di famiglia
     }
@@ -42,6 +41,7 @@ class NuovoPDF : AppCompatActivity() {
             startActivityForResult(intentIm,1)
 
         }
+
     }
 
     fun cambiaActivity(classe :Class<out Activity>){
@@ -70,19 +70,16 @@ class NuovoPDF : AppCompatActivity() {
                     arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
                 }
             }
-            val gen=GeneratorePDF("NOMEPROVVISORIO")//Andrà inserito quello scelto dall'utente
-
-            //Richiamo fragment
-            //TODO Disattivare i pulsanti quando viene generato il fragment, esiste una funzione apposita, ma per farlo mi sa che è
-            //necessario spostare i bottoni in una companion class o come attributi della classe per renderli visibili
-            val fragment = SceltaNome() // Crea una nuova istanza del Fragment
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frammentonascosto, fragment) // Usa `replace` per sostituire un Fragment esistente
-            transaction.commit()
-            //Codice da adattare
-            gen.iniziaCostruzionePDF()
-            gen.caricaImmagini(arrayOfBitmap)
-            Toast.makeText(baseContext, "${arrayOfBitmap.size}", Toast.LENGTH_SHORT).show()
+            val intentRis = Intent(this,SceltaNome::class.java)
+            startActivityForResult(intentRis,2)
+        }
+        else if(requestCode == 2 && data != null){
+            val ris = data.getStringExtra("RITORNO")
+            if(ris!=null){
+                val gen=GeneratorePDF(ris)//Andrà inserito quello scelto dall'utente
+                gen.iniziaCostruzionePDF()
+                gen.caricaImmagini(arrayOfBitmap)
+            }
         }
     }
 }
