@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="10dp">
 
         <TextView
@@ -24,24 +24,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/NomePdf"
-            android:layout_marginLeft="143dp"
+            android:layout_marginLeft="220dp"
             android:text="DataPdf"
             android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/imageView3"
+        <ImageButton
+            android:id="@+id/condividiPdf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/Datapdf"
-            android:layout_marginLeft="159dp"
+            android:layout_marginLeft="80dp"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/share_svgrepo_com" />
 
-        <ImageView
-            android:id="@+id/imageView4"
+        <ImageButton
+            android:id="@+id/eliminaPdf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/imageView3"
-            android:layout_marginLeft="43dp"
+            android:layout_alignLeft="@+id/condividiPdf"
+            android:layout_marginLeft="40dp"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/garbage_svgrepo_com" />
 
 

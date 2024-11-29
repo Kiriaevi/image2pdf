@@ -3,13 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Richiedo i permessi per utilizzare la fotocamera all'utente -->
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!--
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" /> -->
 
     <application
         android:allowBackup="true"
@@ -22,6 +19,9 @@
         android:theme="@style/Theme.Image2pdf"
         tools:targetApi="31">
         <activity
+            android:name=".SceltaNome"
+            android:exported="false" />
+        <activity
             android:name=".NuovoPDF"
             android:exported="false" />
         <activity
@@ -29,17 +29,17 @@
             android:exported="false" />
         <activity
             android:name=".Fotocamera"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light" >
+            android:theme="@style/Theme.AppCompat.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        </application>
-
+    </application>
 
 </manifest>
