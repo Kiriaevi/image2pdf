@@ -18,10 +18,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 //In generale l'adapter View dovrebbe essere ottima per gestire lunghi elenchi
 
 class AdapterClass(private val listaDati :ArrayList<DataClass>) : RecyclerView.Adapter<AdapterClass.ViewHolderClass>() {
+
     class ViewHolderClass(itemView: View):RecyclerView.ViewHolder(itemView) {
         val name:TextView = itemView.findViewById(R.id.NomePdf)
         val data:TextView = itemView.findViewById(R.id.Datapdf)
-        val condividi:TextView = itemView.findViewById(R.id.condividiPdf)
+        val condividi:ImageButton = itemView.findViewById(R.id.condividiPdf)
         init {
             condividi.setOnClickListener {
                 val position = adapterPosition
