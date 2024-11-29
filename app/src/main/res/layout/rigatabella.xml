@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/NomePdf"
-            android:layout_marginLeft="143dp"
+            android:layout_marginLeft="220dp"
             android:text="DataPdf"
             android:textSize="20sp" />
 
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/Datapdf"
-            android:layout_marginLeft="159dp"
+            android:layout_marginLeft="80dp"
             app:srcCompat="@drawable/share_svgrepo_com" />
 
         <ImageView
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/imageView3"
-            android:layout_marginLeft="43dp"
+            android:layout_marginLeft="40dp"
             app:srcCompat="@drawable/garbage_svgrepo_com" />
 
 

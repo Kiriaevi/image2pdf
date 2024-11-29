@@ -31,7 +31,7 @@ class AdapterClass(private val listaDati :ArrayList<DataClass>) : RecyclerView.A
 
     override fun onBindViewHolder(holder: ViewHolderClass, position: Int) {
         val oggettiCorrenti = listaDati[position]
-        holder.data.text=oggettiCorrenti.data
+        holder.data.text= oggettiCorrenti.data.toString()
         holder.name.text=oggettiCorrenti.titolo
     }
 }
