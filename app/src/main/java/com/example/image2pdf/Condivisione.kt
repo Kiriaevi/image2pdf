@@ -40,7 +40,6 @@ class Condivisione : AppCompatActivity() {
     //MetodoTemporaneo
     fun riempiStrutture(listaFile : ArrayList<File>,listaNomi : ArrayList<String>,listaDate : ArrayList<Date>){
         val listaSpuria = GeneratorePDF.directory.listFiles()
-        Log.d("BUGSTRANO",listaSpuria.toString())
         if(listaSpuria!=null){
             for(file in listaSpuria){
                 if(file.isFile){

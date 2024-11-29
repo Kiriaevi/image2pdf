@@ -1,8 +1,11 @@
 package com.example.image2pdf
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.compose.ui.layout.Layout
@@ -18,6 +21,13 @@ class AdapterClass(private val listaDati :ArrayList<DataClass>) : RecyclerView.A
     class ViewHolderClass(itemView: View):RecyclerView.ViewHolder(itemView) {
         val name:TextView = itemView.findViewById(R.id.NomePdf)
         val data:TextView = itemView.findViewById(R.id.Datapdf)
+        val condividi:TextView = itemView.findViewById(R.id.condividiPdf)
+        init {
+            condividi.setOnClickListener {
+                val position = adapterPosition
+                //TODO codice interno per la condivisione
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderClass {
@@ -31,7 +41,7 @@ class AdapterClass(private val listaDati :ArrayList<DataClass>) : RecyclerView.A
 
     override fun onBindViewHolder(holder: ViewHolderClass, position: Int) {
         val oggettiCorrenti = listaDati[position]
-        holder.data.text= oggettiCorrenti.data.toString()
+        holder.data.text= oggettiCorrenti.data
         holder.name.text=oggettiCorrenti.titolo
     }
 }
