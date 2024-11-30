@@ -1,6 +1,7 @@
 package com.example.image2pdf
 
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +26,7 @@ class Condivisione : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_condivisione)
         //Andranno aggiunti qui in un metodo i dati da inserire, per ora inserisco dei dati sperimentali
+        Log.d("FIGO",Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
         val dSalv = GeneratorePDF.directory
         recicleView = findViewById<RecyclerView>(R.id.ContenitorePdf)
         recicleView.layoutManager = LinearLayoutManager(this)
@@ -43,6 +45,7 @@ class Condivisione : AppCompatActivity() {
         val listaSpuria = GeneratorePDF.directory.listFiles()
         if(listaSpuria!=null){
             for(file in listaSpuria){
+                //Toast.makeText(this,file.name,Toast.LENGTH_SHORT).show()
                 if(file.isFile){
                     listaFile.add(file)
                     listaNomi.add(file.name)
@@ -57,9 +60,9 @@ class Condivisione : AppCompatActivity() {
         for(i in listaNomi.indices){
             val anno = listaDate[i].year+1900
             val mese = listaDate[i].month+1
-            val dataClass = DataClass(listaNomi[i],"$anno/$mese")
+            val dataClass = DataClass(listaNomi[i],"$anno/$mese",listaFile[i])
             dataList.add(dataClass)
         }
-        recicleView.adapter = AdapterClass(dataList)
+        recicleView.adapter = AdapterClass(this,dataList)
     }
 }
