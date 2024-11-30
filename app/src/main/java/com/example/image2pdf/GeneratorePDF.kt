@@ -12,8 +12,10 @@ import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Image
 import com.itextpdf.layout.element.Paragraph
+import kotlinx.coroutines.sync.Semaphore
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.CopyOnWriteArrayList
 
 class GeneratorePDF(nome: String) {
     companion object {
@@ -39,10 +41,18 @@ class GeneratorePDF(nome: String) {
             val imageData = ImageDataFactory.create(byteArray)
             return Image(imageData)
         }
+        fun convertiImgProxyAImg(img: ImageProxy, compress: Boolean, qlt: Int = 70): Image {
+            val bitmap: Bitmap = img.toBitmap()
+            return convertiBitMapAImg(bitmap, compress, qlt)
+        }
+
         fun comprimiBitmap(bitmap: Bitmap, qlt: Int = 70): ByteArray {
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, qlt, byteArrayOutputStream)
             return byteArrayOutputStream.toByteArray()
+        }
+        fun deepCopyBitmaps(listaOriginale: List<Bitmap>): List<Bitmap> {
+            return listaOriginale.map { it.copy(it.config!!,true) }
         }
         /**
          * Funzione di ausilio che preleva un bitmap in ingress e lo ruota di [gradiRotazione]
@@ -82,24 +92,20 @@ class GeneratorePDF(nome: String) {
     /** Prende come input una lista di ImageProxy e li converte in formati Image (compatibili con iText), successivamente
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
     Se l'input passato è una lista di ImageProxy richiama la funzione [convertiImgProxyAImg], se è un Bitmap richiama [convertiBitMapAImg]
+     Il parametro [deepCopy] segnala al metodo se è necessario effettuare la deepCopy della lista prima di processarla, questo
+     è utile per gestire casi di concorrenza in Fotocamera.kt in cui la lista viene svuotata dopo il richiamo di questo metodo e
+     porta, come conseguenza, alla stampa di un PDF vuoto, se non si sa cosa si sta facendo lasciare il valore default a false.
      */
-    fun caricaImmagini(immaginiCatturate: List<Bitmap>, compress: Boolean = true, qlt: Int = 70) {
+    fun caricaImmagini(immaginiCatturate: MutableList<Bitmap>, compress: Boolean = true,
+                       qlt: Int = 70, deepCopy: Boolean = false) {
         var count: Int = 0
-        // qui fai la deep copy
-
-        for (item in immaginiCatturate) {
-            when (item) {
-                is Bitmap -> {
-                    aggiungiImmagine(convertiBitMapAImg(item,compress, qlt))
-                }
-                else -> {
-                    Log.e(TAG, "Tipo di immagine non supportato")
-                    continue
-                }
-            }
+        val immaginiDaIterare: List<Bitmap> = if (deepCopy) deepCopyBitmaps(immaginiCatturate) else immaginiCatturate
+        for (item in immaginiDaIterare) {
+            aggiungiImmagine(convertiBitMapAImg(item,compress, qlt))
             aggiungiParagrafo("Immagine $count")
             count++
         }
+        immaginiCatturate.clear()
         closePdf()
     }
     private fun closePdf() {
