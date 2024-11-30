@@ -37,9 +37,23 @@
         app:srcCompat="@drawable/baseline_close_24" />
 
     <ImageButton
+        android:id="@+id/quality"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        app:srcCompat="@drawable/flash_svgrepo_com2" />
+    <ImageButton
         android:id="@+id/flashButton"
-        android:layout_width="158dp"
-        android:layout_height="105dp"
+        android:layout_width="140dp"
+        android:layout_height="110dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.7"
@@ -52,8 +66,8 @@
 
     <ImageButton
         android:id="@+id/Save"
-        android:layout_width="116dp"
-        android:layout_height="103dp"
+        android:layout_width="130dp"
+        android:layout_height="110dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,11 +75,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.9"
+        android:layout_marginStart="140dp"
+        android:elevation="2dp"
         app:srcCompat="@android:drawable/ic_menu_save" />
 
     <Button
         android:id="@+id/image_capture_button"
-        android:layout_width="110dp"
+        android:layout_width="115dp"
         android:layout_height="110dp"
         android:layout_marginBottom="50dp"
         android:elevation="2dp"
