@@ -19,6 +19,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
+import kotlinx.coroutines.sync.Semaphore
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -106,12 +107,7 @@ class Fotocamera : AppCompatActivity() {
             pdfExecutor.execute {
                 val riferimentoAlCostruttorePDF = GeneratorePDF(nomePdf)
                 riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
-                // dato che le immagini sono già state compresse al momento dello scatto dico al metodo che non voglio altre compressioni
-                /** TODO: RICHIEDO LA TUA ATTENZIONE AETORO-AE: io qui ho impostato COMPRESS = true, quindi lui comprime, però se vai
-                 * alla funzione gestioneFoto, noti che lì già effettuo una compressione, mi viene da pensare che doppia compressione porti
-                 * a una qualità in credibilmente di merda, eppure si vede molto bene il pdf finale e con 9 immagini pesa sui 12 mb anziché 102
-                 * come se disattivi la compressione qui (in teoria) ridondante, idee? */
-                riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate.toList(), true)
+                riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true, deepCopy = true)
             }
             Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
             Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
@@ -277,8 +273,8 @@ class Fotocamera : AppCompatActivity() {
         cameraExecutor.shutdown()
         pdfExecutor.shutdown()
     }
-
-    //Questa serve per gestire il nome da inserire (Non ho inserito le robe multithread //TODO KIRIAEVI NON HO GESTITO LE ROBE CONCORRENTI, MA NON PERNSO CHE SIA NECESSARIO
+    //TODO: per qualche motivo il compilatore dava errore e quindi ho commentato tutto
+    //Questa serve per gestire il nome da inserire (Non ho inserito le robe multithread //TODO KIRIAEVI NON HO GESTITO LE ROBE CONCORRENTI, MA NON PERNSO CHE SIA NECESSARIO | Non penso
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 1 && data != null){
