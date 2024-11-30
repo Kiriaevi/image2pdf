@@ -68,10 +68,12 @@ class Fotocamera : AppCompatActivity() {
         val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
         val bottoneStampa = findViewById<ImageButton>(R.id.Save)
         val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
+        val bottoneTornaIndietro = findViewById<ImageButton>(R.id.comeBack)
 
         bottoneScatta.setOnClickListener { takePhoto() }
         bottoneStampa.setOnClickListener { richiediNome() }
         bottoneFlash.setOnClickListener { modificaTorcia() }
+        bottoneTornaIndietro.setOnClickListener { finish() }
     }
 
     //Questa funzione serve per richiamare l'activity che chiederà il nome per creare il pdf
