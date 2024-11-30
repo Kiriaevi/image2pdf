@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="48mm"
+   height="30mm"
+   viewBox="0 0 48 30"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="HD-yes-check.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.6084175"
+     inkscape:cx="98.143798"
+     inkscape:cy="100.25236"
+     inkscape:window-width="1536"
+     inkscape:window-height="960"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.239306"
+       id="rect1"
+       width="46.934734"
+       height="29.007261"
+       x="0.53263283"
+       y="0.49636936" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:none;stroke:#000000;stroke-width:0.2"
+       x="23.678268"
+       y="21.053656"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.9333px;font-family:'Graphik Trial';-inkscape-font-specification:'Graphik Trial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke-width:0.2"
+         x="23.678268"
+         y="21.053656">HD</tspan></text>
+    <path
+       d="M 45.642189,0.99975566 C 45.386277,1.0087864 45.151438,1.1442717 45.015954,1.3610448 L 37.766088,12.45262 33.069329,8.3941384 C 32.86761,8.1848925 32.56503,8.1066125 32.286536,8.1939241 c -0.276988,0.085805 -0.483223,0.3206452 -0.531395,0.6066648 -0.04817,0.2875259 0.06775,0.5765583 0.302579,0.7496744 l 5.371164,4.6485877 c 0.168602,0.143002 0.391397,0.206235 0.609675,0.174622 0.219785,-0.03312 0.413978,-0.158063 0.534408,-0.343224 L 46.316595,2.2040526 C 46.482188,1.9616879 46.495735,1.6485707 46.352732,1.3926574 46.209715,1.1382499 45.934239,0.98620733 45.642196,0.99975566 Z"
+       id="path1"
+       style="fill:#008000;stroke:#008000;stroke-width:0.385375" />
+  </g>
+</svg>

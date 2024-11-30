@@ -2,7 +2,6 @@ package com.example.image2pdf
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import android.util.Log
@@ -13,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
@@ -21,11 +19,6 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
-import com.itextpdf.io.image.ImageDataFactory
-import com.itextpdf.io.source.ByteArrayOutputStream
-import com.itextpdf.layout.element.Image
-import java.io.ByteArrayInputStream
-import java.net.Socket
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -41,18 +34,17 @@ class Fotocamera : AppCompatActivity() {
     private var imageCapture: ImageCapture ?= null
     private var camera: Camera?= null
     private val immaginiCatturate: CopyOnWriteArrayList<Bitmap> = CopyOnWriteArrayList()
-    /** TODO: work around */
-    private var count  = 1
+
     companion object {
         private const val TAG = "FOTOCAMERAX"
         private val capabilities: MutableMap<String, Boolean> = mutableMapOf(
-            "ZERO_SHUTTER_LAG" to false,
             "FLASHLIGHT" to false
         )
         // quello che l'utente vuole dalla fotocamera, ad esempio se clicco il bottone
         // per la torcia significa che l'utente vuole utilizzarla, qui viene impostato
         private val richiesta_utente: MutableMap<String, Boolean> = mutableMapOf(
-            "FLASHLIGHT" to false
+            "FLASHLIGHT" to false,
+            "MAX_QUALITY" to false
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +61,9 @@ class Fotocamera : AppCompatActivity() {
         val bottoneStampa = findViewById<ImageButton>(R.id.Save)
         val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
         val bottoneTornaIndietro = findViewById<ImageButton>(R.id.comeBack)
+        val bottoneMaxQualita = findViewById<ImageButton>(R.id.quality)
 
+        bottoneMaxQualita.setOnClickListener { modificaQualita() }
         bottoneScatta.setOnClickListener { takePhoto() }
         bottoneStampa.setOnClickListener { richiediNome() }
         bottoneFlash.setOnClickListener { modificaTorcia() }
@@ -84,6 +78,24 @@ class Fotocamera : AppCompatActivity() {
 
     private fun modificaTorcia() {
         richiesta_utente["FLASHLIGHT"] = !richiesta_utente["FLASHLIGHT"]!!
+        updateCameraProvider()
+    }
+    private fun modificaQualita() {
+        val isQualityMax = richiesta_utente["MAX_QUALITY"]
+        val bottoneMaxQualita = findViewById<ImageButton>(R.id.quality)
+        richiesta_utente["MAX_QUALITY"] = !richiesta_utente["MAX_QUALITY"]!!
+        if (isQualityMax == false) {
+            /*TODO: giangiu o Narancia Ghira*/
+            // aggiorna immagine da hd_no_check a hd_yes_check per il bottone [bottoneMaxQualita]
+
+            Toast.makeText(baseContext, "Modalità qualità massima: ATTIVA", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            /*TODO: giangiu o Narancia Ghira*/
+            // aggiorna immagine da hd_yes_check a hd_no_check per il bottone [bottoneMaxQualita]
+
+            Toast.makeText(baseContext, "Modalità qualità massima: DISATTIVATA", Toast.LENGTH_SHORT).show()
+        }
         updateCameraProvider()
     }
 
@@ -136,10 +148,6 @@ class Fotocamera : AppCompatActivity() {
                     // ruota l'immagine, comprimila e salvala in un Bitmap
                     val bitmapOutput: Bitmap = gestisciFoto(image)
                     immaginiCatturate.add(bitmapOutput)
-                    /** TODO: work around */
-                    if ( count % 3 == 0)
-                        updateCameraProvider()
-                    count++
                 }
             }
         )
@@ -160,13 +168,9 @@ class Fotocamera : AppCompatActivity() {
         }
     }
     private fun setCapabilities(infoCamera: CameraInfo) {
-        @ExperimentalZeroShutterLag
-        if ( infoCamera.isZslSupported )
-            capabilities["ZERO_SHUTTER_LAG"] = true
         if ( infoCamera.hasFlashUnit() )
             capabilities["FLASHLIGHT"] = true
     }
-
     private fun updateCameraProvider() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         /* camera provider fornisce un'istanza alla fotocamera, con questa siamo in grado di chiamare metodi come
@@ -195,7 +199,6 @@ class Fotocamera : AppCompatActivity() {
             setCameraCycle()
         }, ContextCompat.getMainExecutor(this))
     }
-
     private fun creaImageCapture(primaInizializzazione: Boolean): ImageCapture?  {
         if (primaInizializzazione) {
             return ImageCapture.Builder()
@@ -214,12 +217,12 @@ class Fotocamera : AppCompatActivity() {
     }
 
     private fun setCaptureMode(): Int {
-        @ExperimentalZeroShutterLag
-        if (capabilities["ZERO_SHUTTER_LAG"] == true) {
-            Log.e(TAG, "SIAMO NELLA MODALITÀ CON ZERO_SHUTTER")
-            return ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG
+        if (richiesta_utente["MAX_QUALITY"] == false) {
+            Log.e(TAG, "SIAMO NELLA MODALITÀ CON LATENZA MINIMA")
+            return ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
         }
         else {
+            Log.e(TAG, "SIAMO NELLA MODALITÀ CON MASSIMA QUALITÀ")
             return ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
         }
     }
@@ -229,6 +232,7 @@ class Fotocamera : AppCompatActivity() {
             Toast.makeText(baseContext,
                 "La tua fotocamera non supporta il FLASH",
                 Toast.LENGTH_SHORT).show()
+            return ImageCapture.FLASH_MODE_OFF
         }
 
         return if ( richiesta_utente["FLASHLIGHT"] == true )
