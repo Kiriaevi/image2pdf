@@ -19,7 +19,6 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
-import kotlinx.coroutines.sync.Semaphore
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -29,6 +28,7 @@ import java.util.concurrent.Executors
 class Fotocamera : AppCompatActivity() {
     private lateinit var viewBinding: ActivityFotocameraBinding
 
+    private var numImmagini: Int = 0
     // valori relativi al ciclo di vita di una fotocamera
     private var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private var pdfExecutor: ExecutorService = Executors.newSingleThreadExecutor()
@@ -48,6 +48,7 @@ class Fotocamera : AppCompatActivity() {
             "MAX_QUALITY" to false
         )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
@@ -101,14 +102,20 @@ class Fotocamera : AppCompatActivity() {
     }
 
     private fun stampaPDF(nomePdf : String) {
+        // potrei usare isEmpty sulla lista immaginiCatturate ma cerco di evitare cicli che
+        // potrebbero rallentare la UI dell'utente nel main thread (esagerazione).
+        if (islistaImmaginiCatturateVuota()) {
+            Toast.makeText(baseContext, "Inserisci almeno un'immagine", Toast.LENGTH_SHORT).show()
+            return
+        }
         try {
-            // Todo: migliorare questo if con qualche funzione di kotlin specifica ( ?, !!, ?? )
             // il PDF viene compilato concorrentemente da un thread a parte
             pdfExecutor.execute {
                 val riferimentoAlCostruttorePDF = GeneratorePDF(nomePdf)
                 riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
                 riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true, deepCopy = true)
             }
+            numImmagini = 0
             Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
             Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
         }
@@ -117,6 +124,10 @@ class Fotocamera : AppCompatActivity() {
             Toast.makeText(baseContext, "${message}", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "${message}: ${exc}", exc)
         }
+    }
+
+    private fun islistaImmaginiCatturateVuota(): Boolean {
+        return numImmagini == 0
     }
 
     private fun takePhoto() {
@@ -141,6 +152,7 @@ class Fotocamera : AppCompatActivity() {
                         "Cattura foto riuscita",
                         Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "IMMAGINE CATTURATA ${image}")
+                    numImmagini++
                     // ruota l'immagine, comprimila e salvala in un Bitmap
                     val bitmapOutput: Bitmap = gestisciFoto(image)
                     immaginiCatturate.add(bitmapOutput)
