@@ -21,6 +21,13 @@ class linuxIntegration : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_linux_integration)
+        /* TODO GRAVE @AETORO @AETORO, io come testo predefinito ho messo il mio indirizzo IP locale,
+            ovviamente questa è una stronzata, bisognerebbe mettere l'indirizzo IP dell'utente reale, per
+            fare ciò ho scritto un metodo grazie a ziogpt che trova l'IPV4 dell'utente e lo restituisce, si
+            trova nel companion Object di ServerNanoHttpd e si chiama [ipLocale]. L'output di questo dovrebbe
+            andare al posto del mio IP placeholder che ho messo. In generale migliorare la grafica
+            che è orribile.
+            * */
         try {
             serverExecutor.execute{avviaServer()}
         } catch(exc: Exception) {
