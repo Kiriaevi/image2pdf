@@ -99,7 +99,6 @@ class Fotocamera : AppCompatActivity() {
         }
         updateCameraProvider()
     }
-
     private fun stampaPDF(nomePdf : String) {
         // potrei usare isEmpty sulla lista immaginiCatturate ma cerco di evitare cicli che
         // potrebbero rallentare la UI dell'utente nel main thread (esagerazione).
