@@ -23,9 +23,11 @@
 
         <TextView
             android:id="@+id/infoMessage"
-            android:layout_width="399dp"
-            android:layout_height="376dp"
+            android:layout_width="400dp"
+            android:layout_height="375dp"
             android:gravity="center"
-            android:text="Digita sul tuo terminale il seguente comando &quot;curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; --output nomeFileOutput.pdf http://192.168.1.5:8080" />
+            android:text="Digita sul tuo terminale il seguente comando: \n &quot;curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; --output nomeFileOutput.pdf http://192.168.1.5:8080"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
