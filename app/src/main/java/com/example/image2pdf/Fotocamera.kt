@@ -84,18 +84,17 @@ class Fotocamera : AppCompatActivity() {
     }
     private fun modificaQualita() {
         val isQualityMax = richiesta_utente["MAX_QUALITY"]
-        val bottoneMaxQualita = findViewById<ImageButton>(R.id.quality)
         richiesta_utente["MAX_QUALITY"] = !richiesta_utente["MAX_QUALITY"]!!
+        val buttoneHd = findViewById<ImageButton>(R.id.quality)
+        //Cambio l'immagine
         if (isQualityMax == false) {
-            /*TODO: giangiu o Narancia Ghira*/
-            // aggiorna immagine da hd_no_check a hd_yes_check per il bottone [bottoneMaxQualita]
-
+            val image = resources.getDrawable(R.drawable.sd_943_svgrepo_com,null)
+            buttoneHd.setImageDrawable(image)
             Toast.makeText(baseContext, "Modalità qualità massima: ATTIVA", Toast.LENGTH_SHORT).show()
         }
         else {
-            /*TODO: giangiu o Narancia Ghira*/
-            // aggiorna immagine da hd_yes_check a hd_no_check per il bottone [bottoneMaxQualita]
-
+            val image = resources.getDrawable(R.drawable.hd_941_svgrepo_com,null)
+            buttoneHd.setImageDrawable(image)
             Toast.makeText(baseContext, "Modalità qualità massima: DISATTIVATA", Toast.LENGTH_SHORT).show()
         }
         updateCameraProvider()
