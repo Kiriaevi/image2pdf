@@ -109,6 +109,7 @@ class Fotocamera : AppCompatActivity() {
                 riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
                 riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true, deepCopy = true)
             }
+            immaginiCatturate.clear()
             Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
             Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
         }
