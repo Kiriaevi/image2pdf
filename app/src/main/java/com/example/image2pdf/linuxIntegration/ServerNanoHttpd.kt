@@ -21,31 +21,32 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
     private val immaginiCatturate = mutableListOf<Bitmap>()
     companion object {
         private val TAG: String = "NETWORKING"
+        fun ipLocale(): String {
+            try {
+                val networkInterfaces = NetworkInterface.getNetworkInterfaces()
+                while (networkInterfaces.hasMoreElements()) {
+                    val networkInterface = networkInterfaces.nextElement()
+                    val inetAddresses = networkInterface.inetAddresses
+                    while (inetAddresses.hasMoreElements()) {
+                        val inetAddress = inetAddresses.nextElement()
+                        // Filtra solo gli indirizzi IPv4 e scarta IPv6
+                        if (!inetAddress.isLoopbackAddress && inetAddress is InetAddress && inetAddress.hostAddress.indexOf(":") == -1) {
+                            return inetAddress.hostAddress
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return "ERRORE IP NON TROVATO (si è connessi ad una rete?)"
+        }
     }
     init {
         start(SOCKET_READ_TIMEOUT, false)
         Log.e("SERVERMIO","\nInizializzato! Point your browsers to http://${ipLocale()}:8080/ \n")
     }
 
-    fun ipLocale(): String {
-        try {
-            val networkInterfaces = NetworkInterface.getNetworkInterfaces()
-            while (networkInterfaces.hasMoreElements()) {
-                val networkInterface = networkInterfaces.nextElement()
-                val inetAddresses = networkInterface.inetAddresses
-                while (inetAddresses.hasMoreElements()) {
-                    val inetAddress = inetAddresses.nextElement()
-                    // Filtra solo gli indirizzi IPv4 e scarta IPv6
-                    if (!inetAddress.isLoopbackAddress && inetAddress is InetAddress && inetAddress.hostAddress.indexOf(":") == -1) {
-                        return inetAddress.hostAddress
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return "Indirizzo IP non trovato"
-    }
+
     override fun serve(session: IHTTPSession): Response {
         // Gestisci solo le richieste POST
         if (session.method == Method.POST) {
