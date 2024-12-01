@@ -17,7 +17,6 @@ import java.nio.file.Files
 
 class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
 
-    private val sb: StringBuilder = StringBuilder()
     private val immaginiCatturate = mutableListOf<Bitmap>()
     companion object {
         private val TAG: String = "NETWORKING"
@@ -51,8 +50,7 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
         // Gestisci solo le richieste POST
         if (session.method == Method.POST) {
             var risposta: Response? = null
-            sb.append("Richiesta ricevuta! \n")
-            sb.clear()
+            Log.e(TAG, "Richiesta ricevuta!")
             // Parametri per il corpo della richiesta
             val params = mutableMapOf<String, String>()
             try {
@@ -61,24 +59,23 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
                 if (params.isNotEmpty()) {
                     for ((chiave,valore) in params)
                     {
-                        sb.append("$chiave ricevuto! \n")
+                        Log.e(TAG, "$chiave ricevuto!")
                         aggiungiInRAM(valore)
                     }
                 } else {
-                    sb.append("Nessun valore ricevuto, riprova con un input valido \n")
+                    Log.e(TAG,"Nessun valore ricevuto, riprova con un input valido \n")
                 }
-                sb.append("Tutti i valori sono stati ricevuti, invio delle immagini al generatore di PDF \n")
+                Log.e(TAG, "Tutti i valori sono stati ricevuti, invio delle immagini al generatore di PDF \n")
                 val generatorePDF = GeneratorePDF("NomeACaso")
                 generatorePDF.iniziaCostruzionePDF()
                 val path = generatorePDF.caricaImmagini(immaginiCatturate, deepCopy = true)
                 immaginiCatturate.clear()
-                sb.append("PDF creato, lo recupero e lo invio \n")
+                Log.e(TAG, "PDF creato, lo recupero e lo invio \n")
                 risposta = recuperaPDF(path)
             } catch (e: IOException) {
-                sb.append("Errore nell'elaborazione della richiesta.\n")
+                Log.e(TAG, "Errore nell'elaborazione della richiesta.\n")
                 e.printStackTrace()
             }
-            Log.e(TAG, sb.toString())
             return risposta!!
         } else {
             // Risposta in caso di metodo non supportato
@@ -89,6 +86,7 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
     private fun recuperaPDF(pdfPath: String): Response {
         val pdfFile = File(pdfPath)
         if (!pdfFile.exists()) {
+            Log.e(TAG, "PDF passato inesistente")
             return newFixedLengthResponse(
                 Response.Status.NOT_FOUND,
                 "text/plain", "PDF non trovato"
@@ -99,6 +97,7 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
         val pdfInputStream = FileInputStream(pdfFile)
 
         // Restituisce il PDF come risposta con un InputStream
+        Log.e(TAG, "sto creando una chunked response")
         return newChunkedResponse(
             Response.Status.OK,
             "application/pdf",  // Tipo di contenuto PDF
@@ -113,6 +112,7 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
         val bitmap = BitmapFactory.decodeStream(inputStream)
         // Se il bitmap è stato creato correttamente
         bitmap?.let {
+            Log.e(TAG, "File aggiunto in RAM")
             immaginiCatturate.add(bitmap)
         } ?: {
             Log.e(TAG, "Errore nell'elaborazione di $path")

@@ -29,6 +29,7 @@ class linuxIntegration : AppCompatActivity() {
             che è orribile.
             * */
         try {
+            Log.e("IPLOCALE", "IP LOCALE: ${ServerNanoHttpd.ipLocale()}")
             serverExecutor.execute{avviaServer()}
         } catch(exc: Exception) {
             Toast.makeText(this, "Si è verificato un errore nella creazione del server", Toast.LENGTH_LONG).show()
