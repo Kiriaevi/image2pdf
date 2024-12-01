@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             cambiaActivity(NuovoPDF::class.java)
         }
         bottone3.setOnClickListener {
+            //TODO: cambia l'icona in tux_linux, è già nella directory da te creata
             cambiaActivity(linuxIntegration::class.java)
         }
     }
