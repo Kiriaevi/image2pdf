@@ -27,16 +27,32 @@ import java.io.File
 class AdapterClass(private val context : Context, private val listaDati :ArrayList<DataClass>) : RecyclerView.Adapter<AdapterClass.ViewHolderClass>() {
 
     //Classe che definisce la logica della singola riga
-    class ViewHolderClass(itemView: View,listaDati: ArrayList<DataClass>):RecyclerView.ViewHolder(itemView) {
+    class ViewHolderClass(adapterClass: AdapterClass,itemView: View,listaDati: ArrayList<DataClass>):RecyclerView.ViewHolder(itemView) {
         val name:TextView = itemView.findViewById(R.id.NomePdf)
         val data:TextView = itemView.findViewById(R.id.Datapdf)
         val condividi:ImageButton = itemView.findViewById(R.id.condividiPdf)
+        val elimina:ImageButton = itemView.findViewById(R.id.eliminaPdf)
+
         init {
             condividi.setOnClickListener {
                 val position = adapterPosition
                 //TODO codice interno per la condivisione
                 val filePdf : File = listaDati[position].file
                 condividiPdf(itemView.context,filePdf)
+            }
+            elimina.setOnClickListener {
+                val position = adapterPosition
+                //Elimino da file system
+                val fileRimuovere = listaDati.get(position).file
+                val rimozione = fileRimuovere.delete()
+                if(rimozione){
+                    //Elimino dalla tabella
+                    listaDati.removeAt(position)
+                    adapterClass.notifyItemRemoved(position)
+                }
+                else{
+                    Toast.makeText(itemView.context,"Rimozione fallita",Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -65,7 +81,7 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderClass {
         val ItemView = LayoutInflater.from(parent.context).inflate(R.layout.rigatabella, parent,false)
-        return ViewHolderClass(ItemView,listaDati)
+        return ViewHolderClass(this,ItemView,listaDati)
     }
 
     override fun getItemCount(): Int {
