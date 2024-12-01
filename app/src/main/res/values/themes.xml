@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Image2pdf" parent="Theme.Material3.DayNight.NoActionBar">
             <item name="android:background">@color/grey</item>
+            <item name="android:backgroundTint">@color/grey</item>
             <item name="android:text">@color/white</item>
             <item name="buttonStyle">@style/MyButtonStyle</item>
     </style>
