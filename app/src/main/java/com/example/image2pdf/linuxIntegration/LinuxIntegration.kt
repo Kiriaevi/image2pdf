@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 
 class linuxIntegration : AppCompatActivity() {
     companion object {
-        private val TAG = "LINUXINT"
+        private val TAG = "NETWORKING"
         private val porta = 8080
     }
     private var serverExecutor: ExecutorService = Executors.newSingleThreadExecutor()
@@ -29,6 +29,7 @@ class linuxIntegration : AppCompatActivity() {
             che è orribile.
             * */
         try {
+            Log.e(TAG, "IP LOCALE: ${ServerNanoHttpd.ipLocale()}")
             serverExecutor.execute{avviaServer()}
         } catch(exc: Exception) {
             Toast.makeText(this, "Si è verificato un errore nella creazione del server", Toast.LENGTH_LONG).show()
