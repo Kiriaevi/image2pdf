@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,13 +35,13 @@ class Condivisione : AppCompatActivity() {
         val bottReset=findViewById<ImageButton>(R.id.gomma)
         val raccogliDati=findViewById<RecyclerView>(R.id.ContenitorePdf)
         bottRicerca.setOnClickListener {
-            val dSalv = GeneratorePDF.directory
-            recicleView = findViewById<RecyclerView>(R.id.ContenitorePdf)
-            recicleView.layoutManager = LinearLayoutManager(this)
-            recicleView.setHasFixedSize(true)
+            if(findViewById<TextView>(R.id.textView).text!=""){
+
+                recicleView.adapter = AdapterClass(this,ArrayList<DataClass>())
+            }
         }
         bottReset.setOnClickListener {
-            creaContainer()
+            recicleView.adapter = AdapterClass(this,dataList)
         }
     }
 
