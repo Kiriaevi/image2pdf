@@ -18,15 +18,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Image2pdf"
         tools:targetApi="31">
+        <activity
+            android:name=".linuxIntegration.linuxIntegration"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.image2pdf.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
         <activity
             android:name=".SceltaNome"
             android:exported="false" />

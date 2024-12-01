@@ -61,4 +61,7 @@ dependencies {
     implementation("androidx.camera:camera-extensions:$cameraxVersion")
     // Dipendenze di iText
     implementation("com.itextpdf:itext7-core:7.2.4")
+
+    // Dipendenze di NanoHTTPD
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
 }
