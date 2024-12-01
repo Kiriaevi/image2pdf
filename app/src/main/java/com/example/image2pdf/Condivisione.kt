@@ -3,6 +3,7 @@ package com.example.image2pdf
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,20 +28,38 @@ class Condivisione : AppCompatActivity() {
         // TODO: 💀💀💀💀💀
         Log.d("FIGO",Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
         val dSalv = GeneratorePDF.directory
-        recicleView = findViewById<RecyclerView>(R.id.ContenitorePdf)
-        recicleView.layoutManager = LinearLayoutManager(this)
-        recicleView.setHasFixedSize(true)
-        dataList = arrayListOf<DataClass>()
-        riempiStrutture(listaFile,listaNomi,listaDate)
-        getData()
+        creaContainer()
+
+        val bottRicerca=findViewById<ImageButton>(R.id.cerca)
+        val bottReset=findViewById<ImageButton>(R.id.gomma)
+        val raccogliDati=findViewById<RecyclerView>(R.id.ContenitorePdf)
+        bottRicerca.setOnClickListener {
+            val dSalv = GeneratorePDF.directory
+            recicleView = findViewById<RecyclerView>(R.id.ContenitorePdf)
+            recicleView.layoutManager = LinearLayoutManager(this)
+            recicleView.setHasFixedSize(true)
+        }
+        bottReset.setOnClickListener {
+            creaContainer()
+        }
     }
 
     //Sto facendo sta cosa, ma è altamente inefficente, la renderò più efficente spostando tutti i dati in un database
     //E aggiornando quest'ultimo a ogni dataEntry o dataExit, per far ciò la cartella dovrà essere interna all'app, per non avere
     //inconsistenze (Salvo root o cose strane ovviamente), in ogni caso con pochi dati è gestibile
 
-    //MetodoTemporaneo
-    fun riempiStrutture(listaFile : ArrayList<File>,listaNomi : ArrayList<String>,listaDate : ArrayList<Date>){
+    fun creaContainer(){
+        val dSalv = GeneratorePDF.directory
+        recicleView = findViewById<RecyclerView>(R.id.ContenitorePdf)
+        recicleView.layoutManager = LinearLayoutManager(this)
+        recicleView.setHasFixedSize(true)
+        dataList = arrayListOf<DataClass>()
+        riempiStrutture()
+        getData()
+    }
+
+    //MetodoTemporaneo per inserire i dati della directory
+    fun riempiStrutture(){
         val listaSpuria = GeneratorePDF.directory.listFiles()
         if(listaSpuria!=null){
             for(file in listaSpuria){
