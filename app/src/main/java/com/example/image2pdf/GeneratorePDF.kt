@@ -66,7 +66,7 @@ class GeneratorePDF(nome: String) {
         }
     }
     // nome del file
-    private val file: File  =File(directory, "${nome}.pdf")
+    private val file: File = File(directory, "${nome}.pdf")
     // Immagini passati in input
     // private val immaginiCatturate: MutableList<ImageProxy> = mutableListOf()
     // riferimento al documento, questo viene usato per scrivere paragrafi, testo e immagini
@@ -95,9 +95,11 @@ class GeneratorePDF(nome: String) {
      Il parametro [deepCopy] segnala al metodo se è necessario effettuare la deepCopy della lista prima di processarla, questo
      è utile per gestire casi di concorrenza in Fotocamera.kt in cui la lista viene svuotata dopo il richiamo di questo metodo e
      porta, come conseguenza, alla stampa di un PDF vuoto, se non si sa cosa si sta facendo lasciare il valore default a false.
+
+     La funzione returna il path in cui è salvato il pdf.
      */
     fun caricaImmagini(immaginiCatturate: MutableList<Bitmap>, compress: Boolean = true,
-                       qlt: Int = 70, deepCopy: Boolean = false) {
+                       qlt: Int = 70, deepCopy: Boolean = false): String {
         var count: Int = 0
         val immaginiDaIterare: List<Bitmap> = if (deepCopy) deepCopyBitmaps(immaginiCatturate) else immaginiCatturate
         for (item in immaginiDaIterare) {
@@ -107,6 +109,7 @@ class GeneratorePDF(nome: String) {
         }
         immaginiCatturate.clear()
         closePdf()
+        return file.path
     }
     private fun closePdf() {
         try {

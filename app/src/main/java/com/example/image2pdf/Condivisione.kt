@@ -26,6 +26,7 @@ class Condivisione : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_condivisione)
         //Andranno aggiunti qui in un metodo i dati da inserire, per ora inserisco dei dati sperimentali
+        // TODO: 💀💀💀💀💀
         Log.d("FIGO",Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
         val dSalv = GeneratorePDF.directory
         recicleView = findViewById<RecyclerView>(R.id.ContenitorePdf)
