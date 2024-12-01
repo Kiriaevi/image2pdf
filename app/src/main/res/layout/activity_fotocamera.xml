@@ -38,8 +38,8 @@
 
     <ImageButton
         android:id="@+id/quality"
-        android:layout_width="60dp"
-        android:layout_height="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        app:srcCompat="@drawable/flash_svgrepo_com2" />
+        app:srcCompat="@drawable/hd_941_svgrepo_com" />
     <ImageButton
         android:id="@+id/flashButton"
         android:layout_width="140dp"
@@ -84,9 +84,9 @@
         android:layout_width="115dp"
         android:layout_height="110dp"
         android:layout_marginBottom="50dp"
+        android:backgroundTint="@color/white"
         android:elevation="2dp"
         android:text=""
-        android:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
