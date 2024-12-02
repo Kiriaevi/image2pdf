@@ -54,12 +54,11 @@ class Fotocamera : AppCompatActivity() {
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         enableEdgeToEdge()
-
         impostaLogicaDeiBottoni()
         startCamera()
     }
     private fun impostaLogicaDeiBottoni() {
-        val bottoneScatta = findViewById<Button>(R.id.image_capture_button)
+        val bottoneScatta = findViewById<ImageButton>(R.id.image_capture_button)
         val bottoneStampa = findViewById<ImageButton>(R.id.Save)
         val bottoneFlash = findViewById<ImageButton>(R.id.flashButton)
         val bottoneTornaIndietro = findViewById<ImageButton>(R.id.comeBack)
@@ -88,12 +87,12 @@ class Fotocamera : AppCompatActivity() {
         val buttoneHd = findViewById<ImageButton>(R.id.quality)
         //Cambio l'immagine
         if (isQualityMax == false) {
-            val image = resources.getDrawable(R.drawable.sd_943_svgrepo_com,null)
+            val image = resources.getDrawable(R.drawable.hd_941_svgrepo_com,null)
             buttoneHd.setImageDrawable(image)
             Toast.makeText(baseContext, "Modalità qualità massima: ATTIVA", Toast.LENGTH_SHORT).show()
         }
         else {
-            val image = resources.getDrawable(R.drawable.hd_941_svgrepo_com,null)
+            val image = resources.getDrawable(R.drawable.sd_943_svgrepo_com,null)
             buttoneHd.setImageDrawable(image)
             Toast.makeText(baseContext, "Modalità qualità massima: DISATTIVATA", Toast.LENGTH_SHORT).show()
         }
