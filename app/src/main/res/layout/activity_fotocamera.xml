@@ -12,6 +12,7 @@
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -79,19 +80,32 @@
         android:elevation="2dp"
         app:srcCompat="@android:drawable/ic_menu_save" />
 
-    <Button
+    <ImageButton
+        android:id="@+id/image_capture_button"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="2dp"
+        app:srcCompat="@drawable/fotocamerabottone" />
+<!--
+    <ImageButton
         android:id="@+id/image_capture_button"
         android:layout_width="110dp"
         android:layout_height="110dp"
         android:layout_marginBottom="50dp"
-        android:backgroundTint="@color/white"
         android:elevation="2dp"
         android:text=""
+        app:srcCompat="@drawable/fotocamerabottone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
+-->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_centerline"
