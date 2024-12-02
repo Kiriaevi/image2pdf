@@ -26,16 +26,12 @@ class Condivisione : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_condivisione)
-        //Andranno aggiunti qui in un metodo i dati da inserire, per ora inserisco dei dati sperimentali
-        // TODO: 💀💀💀💀💀
-        Log.d("FIGO",Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
         val dSalv = GeneratorePDF.directory
         creaContainer()
 
         val bottRicerca=findViewById<ImageButton>(R.id.cerca)
         val bottReset=findViewById<ImageButton>(R.id.gomma)
-        val raccogliDati=findViewById<RecyclerView>(R.id.ContenitorePdf)
-        //Ricerca pdf particolare
+        //Ricerca pdf particolari
         bottRicerca.setOnClickListener {
             if(!findViewById<TextView>(R.id.textView).text.toString().isBlank()){
                 val arrayFiltrato = ArrayList<DataClass>()
