@@ -5,6 +5,7 @@ import android.os.Environment
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,13 +37,32 @@ class Condivisione : AppCompatActivity() {
         val raccogliDati=findViewById<RecyclerView>(R.id.ContenitorePdf)
         //Ricerca pdf particolare
         bottRicerca.setOnClickListener {
-            if(findViewById<TextView>(R.id.textView).text!=""){
-
-                recicleView.adapter = AdapterClass(this,ArrayList<DataClass>())
+            if(!findViewById<TextView>(R.id.textView).text.toString().isBlank()){
+                val arrayFiltrato = ArrayList<DataClass>()
+                filtra(arrayFiltrato,findViewById<TextView>(R.id.textView).text.toString())
+                recicleView.adapter = AdapterClass(this,arrayFiltrato)
             }
         }
         bottReset.setOnClickListener {
             recicleView.adapter = AdapterClass(this,dataList)
+        }
+    }
+
+    //Ricerca nel sottoinsieme
+    fun filtra(arrayFiltrare : ArrayList<DataClass>,key : String){
+        var posizione = 0
+        for (data in dataList){
+            var stringaFilt = data.titolo
+            if(stringaFilt.length<=4){
+                posizione++
+                continue
+            }
+            if(stringaFilt.contains(key)){
+                val attuale = dataList.get(posizione)
+                val dati = DataClass(attuale.titolo,attuale.data,attuale.file)
+                arrayFiltrare.add(dati)
+            }
+            posizione++
         }
     }
 
