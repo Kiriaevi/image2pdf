@@ -22,7 +22,6 @@ class GeneratorePDF(nome: String) {
         // Directory di salvataggio comune a tutte le istanze
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val TAG =  "GeneratorePDF"
-
         /**
         Il metodo che si occupa di convertire un Bitmap in Image o ImageProxy in Image. Opzionalmente
         se il booleano passato è true (default) si impegna pure a comprimere l'immagine per risparmiare spazio, viceversa se
@@ -131,5 +130,4 @@ class GeneratorePDF(nome: String) {
             Log.e(TAG, "Errore: ${exc}")
         }
     }
-
 }
