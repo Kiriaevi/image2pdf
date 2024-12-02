@@ -15,6 +15,7 @@ class linuxIntegration : AppCompatActivity() {
         private val TAG = "NETWORKING"
         private val porta = 8080
     }
+    // aggiunte generiche che voglio inviare a cristian
     private var serverExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private var server: ServerNanoHttpd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
