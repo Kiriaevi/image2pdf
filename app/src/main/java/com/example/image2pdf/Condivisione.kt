@@ -12,7 +12,7 @@ import java.io.File
 import java.util.Date
 
 class Condivisione : AppCompatActivity() {
-
+    // un'altra modifica
     //In dataList per ora ci metto i dati artificiali, appena riusciremo automatizzeremo l'ingresso
     private lateinit var recicleView : RecyclerView
     private lateinit var dataList: ArrayList<DataClass>
