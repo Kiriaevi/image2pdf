@@ -22,6 +22,21 @@
     </androidx.camera.view.PreviewView>
 
     <ImageButton
+        android:id="@+id/image_capture_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:srcCompat="@drawable/fotocamerabottone" />
+
+    <ImageButton
         android:id="@+id/comeBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,20 +93,6 @@
         android:layout_marginStart="140dp"
         android:elevation="2dp"
         app:srcCompat="@android:drawable/ic_menu_save" />
-
-    <Button
-        android:id="@+id/image_capture_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginBottom="50dp"
-        android:backgroundTint="@color/white"
-        android:elevation="2dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_centerline"
