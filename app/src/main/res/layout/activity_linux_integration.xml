@@ -26,7 +26,7 @@
             android:layout_width="400dp"
             android:layout_height="375dp"
             android:gravity="center"
-            android:text="Digita sul tuo terminale il seguente comando: \n &quot;curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; --output nomeFileOutput.pdf http://192.168.1.5:8080 \n (Prima dell'output si possono aggiungere un numero qualsiasi di immagini)"
+            android:text="Digita sul tuo terminale il seguente comando: \n &quot;curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; --output nomeFileOutput.pdf http://192.168.1.5:8080 \n (Prima dell'output si possono aggiungere un numero qualsiasi di immagini utilizzando prima -F)"
             android:textColor="@color/white"
             android:textSize="25sp" />
     </FrameLayout>
