@@ -6,17 +6,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
 class NuovoPDF : AppCompatActivity() {
 
     companion object {
-        private var arrayOfBitmap = mutableListOf<Bitmap>()//Raccoglitore di foto di famiglia
+        private var arrayOfBitmap = mutableListOf<Bitmap>()//Qui dentro ci saranno le foto scelte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +73,7 @@ class NuovoPDF : AppCompatActivity() {
         else if(requestCode == 2 && data != null){
             val ris = data.getStringExtra("RITORNO")
             if(ris!=null){
-                val gen=GeneratorePDF(ris)//Andrà inserito quello scelto dall'utente
+                val gen=GeneratorePDF(ris)
                 gen.iniziaCostruzionePDF()
                 gen.caricaImmagini(arrayOfBitmap)
             }

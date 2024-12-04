@@ -4,19 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuView.ItemView
-import androidx.compose.ui.layout.Layout
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.io.File
 
 //Queste due classi servono ad adattare i dati al RecycleView, si ereditano le classi e si modificano opportunamente
@@ -36,7 +31,6 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
         init {
             condividi.setOnClickListener {
                 val position = adapterPosition
-                //TODO codice interno per la condivisione
                 val filePdf : File = listaDati[position].file
                 condividiPdf(itemView.context,filePdf)
             }
