@@ -7,6 +7,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -23,12 +24,17 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
 
     //Classe che definisce la logica della singola riga
     class ViewHolderClass(adapterClass: AdapterClass,itemView: View,listaDati: ArrayList<DataClass>):RecyclerView.ViewHolder(itemView) {
-        val name:TextView = itemView.findViewById(R.id.NomePdf)
+        val name:Button = itemView.findViewById(R.id.NomePdf)
         val data:TextView = itemView.findViewById(R.id.Datapdf)
         val condividi:ImageButton = itemView.findViewById(R.id.condividiPdf)
         val elimina:ImageButton = itemView.findViewById(R.id.eliminaPdf)
 
         init {
+            name.setOnClickListener {
+                val position = adapterPosition
+                val filePdf : File = listaDati[position].file
+                apriPdf(itemView.context,filePdf)
+            }
             condividi.setOnClickListener {
                 val position = adapterPosition
                 val filePdf : File = listaDati[position].file
@@ -53,6 +59,23 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
         //Purtoppo hanno cambiato tutta la gestione dei permessi per la condivisione da android 10, per questo motivo va configurato
         //Un file provider anche nel manifest (fatto)
         private fun condividiPdf(context: Context,file : File) {
+            val fileUri: Uri = ottieniUri(context,file)
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/pdf"
+                putExtra(Intent.EXTRA_STREAM, fileUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)  // Permessi temporanei per la lettura
+            }
+            context.startActivity(Intent.createChooser(shareIntent,"Condividi il file PDF"))
+        }
+        private fun apriPdf(context: Context,file : File) {
+            val fileUri: Uri = ottieniUri(context,file)
+            val viewIntent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(fileUri, "application/pdf")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)  // Permessi temporanei per la lettura
+            }
+            context.startActivity(Intent.createChooser(viewIntent,"Condividi il file PDF"))
+        }
+        fun ottieniUri(context: Context,file: File) : Uri{
             val fileUri: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 //Android 10 e versioni successive
                 FileProvider.getUriForFile(
@@ -64,12 +87,7 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
                 // Su versioni precedenti
                 Uri.fromFile(file)
             }
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/pdf"
-                putExtra(Intent.EXTRA_STREAM, fileUri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)  // Permessi temporanei per la lettura
-            }
-            context.startActivity(Intent.createChooser(shareIntent,"Condividi il file PDF"))
+            return fileUri
         }
     }
 

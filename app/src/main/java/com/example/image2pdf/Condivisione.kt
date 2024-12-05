@@ -113,7 +113,7 @@ class Condivisione : AppCompatActivity() {
         for(i in listaNomi.indices){
             val anno = listaDate[i].year+1900
             val mese = listaDate[i].month+1
-            val dataClass = DataClass(listaNomi[i],"$anno/$mese",listaFile[i])
+            val dataClass = DataClass(listaNomi[i],"$mese/$anno",listaFile[i])
             dataList.add(dataClass)
         }
         recicleView.adapter = AdapterClass(this,dataList)
@@ -155,6 +155,7 @@ class Condivisione : AppCompatActivity() {
         }
     }
 
+    //Al rientro devo aggiornare la lista, questo poichè potrebbe essere cambiata
     override fun onResume() {
         super.onResume()
         pulisci()
