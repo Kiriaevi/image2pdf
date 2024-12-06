@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraInfo
@@ -19,6 +20,8 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
+import com.example.image2pdf.permissions.PermissionManager
+import com.example.image2pdf.permissions.PermissionManager.Companion.REQUIRED_PERMISSIONS
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -48,14 +51,22 @@ class Fotocamera : AppCompatActivity() {
             "MAX_QUALITY" to false
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityFotocameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         enableEdgeToEdge()
-        impostaLogicaDeiBottoni()
-        startCamera()
+
+        gestisciPermessi()
+    }
+    private fun gestisciPermessi() {
+        val gestorePermessi : PermissionManager = PermissionManager(this.baseContext, this)
+        if (gestorePermessi.allPermissionsGranted()) {
+            impostaLogicaDeiBottoni()
+            startCamera()
+        } else {
+            gestorePermessi.requestPermissions()
+        }
     }
     private fun impostaLogicaDeiBottoni() {
         val bottoneScatta = findViewById<ImageButton>(R.id.image_capture_button)
