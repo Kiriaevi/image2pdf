@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.example.image2pdf.MainActivity
 
 class PermissionManager(context: Context, activity: FragmentActivity) {
     private val baseContext: Context = context
@@ -29,6 +30,8 @@ class PermissionManager(context: Context, activity: FragmentActivity) {
             }
             if (!permissionGranted) {
                 activityCorrente.finish()
+            } else {
+                activityCorrente.recreate()
             }
         }
     companion object {
