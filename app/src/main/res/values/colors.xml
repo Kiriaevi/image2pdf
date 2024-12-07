@@ -5,4 +5,6 @@
     <color name="grey">#333333</color>
     <color name="lightGrey">#575656</color>
     <color name="red">#C41212</color>
+    <color name="arancioScuro">#390800</color>
+    <color name="arancioBordo">#A1402C</color>
 </resources>

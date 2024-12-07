@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Img2pdf</string>
     <string name="take_photo">Scatta foto</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="spiegazione">Questa funzione permette la conversione di immagini in PDF mediante accesso remoto
+    da una macchina Linux</string>
+    <string name="istruzioni">Digita sul tuo terminale il seguente comando: </string>
+    <string name="comando">curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; --output nomeFileOutput.pdf http://IP_LOCALE:8080</string>
+    <string name="extraComando">Prima dell\'output si possono aggiungere un numero qualsiasi di immagini utilizzando prima -F</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

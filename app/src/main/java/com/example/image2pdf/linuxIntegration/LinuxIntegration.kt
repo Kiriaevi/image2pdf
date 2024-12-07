@@ -2,6 +2,8 @@ package com.example.image2pdf.linuxIntegration
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,20 +17,15 @@ class linuxIntegration : AppCompatActivity() {
         private val TAG = "NETWORKING"
         private val porta = 8080
     }
-    // aggiunte generiche che voglio inviare a cristian
     private var serverExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private var server: ServerNanoHttpd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_linux_integration)
-        /* TODO GRAVE @AETORO @AETORO, io come testo predefinito ho messo il mio indirizzo IP locale,
-            ovviamente questa è una stronzata, bisognerebbe mettere l'indirizzo IP dell'utente reale, per
-            fare ciò ho scritto un metodo grazie a ziogpt che trova l'IPV4 dell'utente e lo restituisce, si
-            trova nel companion Object di ServerNanoHttpd e si chiama [ipLocale]. L'output di questo dovrebbe
-            andare al posto del mio IP placeholder che ho messo. In generale migliorare la grafica
-            che è orribile.
-            * */
+
+        val bottoneStampa = findViewById<TextView>(R.id.comando)
+        bottoneStampa.setText("curl -X POST -F file1=@/path/file/1 -F file2=@/path/file/2 --output nomeFileOutput.pdf http://${ServerNanoHttpd.ipLocale()}:8080")
         try {
             Log.e(TAG, "IP LOCALE: ${ServerNanoHttpd.ipLocale()}")
             serverExecutor.execute{avviaServer()}

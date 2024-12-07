@@ -7,18 +7,155 @@
     android:layout_height="match_parent"
     tools:context=".linuxIntegration.linuxIntegration">
 
-    <TextView
-        android:id="@+id/infoMessage"
-        android:layout_width="400dp"
-        android:layout_height="375dp"
-        android:gravity="center"
-        android:text="Digita sul tuo terminale il seguente comando: \n &quot;curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; --output nomeFileOutput.pdf http://192.168.1.5:8080 \n (Prima dell'output si possono aggiungere un numero qualsiasi di immagini utilizzando prima -F)"
-        android:textColor="@color/white"
-        android:textSize="25sp"
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_below="@id/informazioni"
+        android:background="@drawable/border_scuro"
+        android:fitsSystemWindows="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="Attiva Server"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/informazioni"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:paddingTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintTop_toBottomOf="@+id/topBar">
+        <!--- Digita sul tuo terminale il seguente comando: \n &quot;curl -X POST -F &quot;file1=@/path/file/1&quot; -F &quot;file2=@/path/file/2&quot; -output nomeFileOutput.pdf http://IP_LOCALE:8080 \n (Prima dell'output si possono aggiungere un numero qualsiasi di immagini utilizzando prima -F) -->
+        <TextView
+            android:id="@+id/infoMessage1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginEnd="11dp"
+            android:gravity="center"
+            android:text="Cos'è?"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.398" />
+        <TextView
+            android:id="@+id/infoMessage2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginEnd="11dp"
+            android:justificationMode="inter_word"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="@string/spiegazione"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.398" />
+        <TextView
+            android:id="@+id/infoMessage3"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginEnd="11dp"
+            android:justificationMode="inter_word"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:textStyle="bold"
+            android:text="Come si attiva?"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.398" />
+        <TextView
+            android:id="@+id/istruzioni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+
+            android:layout_marginStart="11dp"
+            android:layout_marginEnd="11dp"
+            android:justificationMode="inter_word"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="@string/istruzioni"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.398" />
+        <TextView
+            android:id="@+id/comando"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/border_comando"
+            android:layout_marginStart="11dp"
+            android:layout_marginEnd="11dp"
+            android:justificationMode="inter_word"
+            android:paddingStart="25dp"
+            android:textStyle="italic"
+            android:paddingEnd="25dp"
+            android:text="@string/comando"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.398" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/arancioBordo" />
+        <TextView
+            android:id="@+id/extraComando"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="11dp"
+            android:layout_marginEnd="11dp"
+            android:justificationMode="inter_word"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:text="@string/extraComando"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.398" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
