@@ -55,9 +55,6 @@ class linuxIntegration : AppCompatActivity() {
     private fun disattivaServer() {
         server?.let{
             server!!.stop()
-        } ?: run {
-            Log.e(TAG, "Il server è nullo, non è stato mai avviato!")
-            throw NullPointerException("Il server è nullo, non è stato mai avviato!")
         }
     }
     override fun onDestroy() {
