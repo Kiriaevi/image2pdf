@@ -36,9 +36,16 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
+        <!-- con launchMode: singleTask mi assicuro che se già esiste una
+             activity in primo piano non ne viene creata una nuova ma bensì riutilizzata
+             quella già esistente
+         -->
         <activity
             android:name=".SceltaNome"
-            android:exported="false" />
+            android:exported="false"
+
+            android:launchMode="singleTask"
+            />
         <activity
             android:name=".NuovoPDF"
             android:exported="false" />
