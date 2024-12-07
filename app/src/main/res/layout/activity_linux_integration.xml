@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:text="Attiva Server"
+            android:text="Attiva/Disattiva server"
             android:textColor="@color/white"
             android:textSize="18sp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -122,6 +122,8 @@
             android:layout_marginEnd="11dp"
             android:justificationMode="inter_word"
             android:paddingStart="25dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textStyle="italic"
             android:paddingEnd="25dp"
             android:text="@string/comando"
