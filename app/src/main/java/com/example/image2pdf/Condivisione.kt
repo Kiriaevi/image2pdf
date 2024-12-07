@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -149,8 +150,11 @@ class Condivisione : AppCompatActivity() {
             val ris = data.getStringExtra("RITORNO")
             if(ris!=null){
                 val gen=GeneratorePDF(ris)
-                gen.iniziaCostruzionePDF()
-                gen.caricaImmagini(arrayOfBitmap)
+                val canWrite : Boolean = gen.iniziaCostruzionePDF()
+                if(canWrite)
+                    gen.caricaImmagini(arrayOfBitmap)
+                else
+                    Toast.makeText(baseContext, "ERRORE, FILE PDF ESISTE GIÀ, RIPROVA CON UN NOME DIVERSO", Toast.LENGTH_SHORT).show()
             }
         }
     }

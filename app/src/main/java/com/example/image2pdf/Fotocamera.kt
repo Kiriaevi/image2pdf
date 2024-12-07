@@ -5,10 +5,8 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraInfo
@@ -21,7 +19,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
 import com.example.image2pdf.permissions.PermissionManager
-import com.example.image2pdf.permissions.PermissionManager.Companion.REQUIRED_PERMISSIONS
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -120,12 +117,20 @@ class Fotocamera : AppCompatActivity() {
             // il PDF viene compilato concorrentemente da un thread a parte
             pdfExecutor.execute {
                 val riferimentoAlCostruttorePDF = GeneratorePDF(nomePdf)
-                riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
-                riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true, deepCopy = true)
+                val canWrite : Boolean = riferimentoAlCostruttorePDF.iniziaCostruzionePDF()
+                if (canWrite) {
+                    riferimentoAlCostruttorePDF.caricaImmagini(immaginiCatturate, true, deepCopy = true)
+                    Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
+                    runOnUiThread {
+                        Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
+                    }
+                    numImmagini = 0
+                } else
+                    runOnUiThread {
+                        Toast.makeText(baseContext, "ERRORE, FILE PDF ESISTE GIÀ, RIPROVA CON UN NOME DIVERSO", Toast.LENGTH_SHORT).show()
+                        richiediNome()
+                    }
             }
-            numImmagini = 0
-            Log.d(TAG, "PDF CREATO, CHIUSURA THREAD")
-            Toast.makeText(baseContext, "PDF CREATO, è in DOCUMENTS", Toast.LENGTH_SHORT).show()
         }
         catch (exc: Exception) {
             val message = "ERRORE NELLA CREAZIONE DELL'ISTANZA AL PDF: ${exc}"
