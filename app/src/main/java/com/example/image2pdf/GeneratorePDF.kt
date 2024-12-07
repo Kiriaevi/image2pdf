@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.camera.core.ImageProxy
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.io.source.ByteArrayOutputStream
@@ -69,24 +70,24 @@ class GeneratorePDF(nome: String) {
     // Immagini passati in input
     // private val immaginiCatturate: MutableList<ImageProxy> = mutableListOf()
     // riferimento al documento, questo viene usato per scrivere paragrafi, testo e immagini
-    private var document: Document? = null
+    private lateinit var document: Document
 
     /** imposta l'attributo [document] del documento che si sta modificando in modo da avere un riferimento
      al file ATTENZIONE POSSIBILE BUG: il documento viene chiuso in [impostaInformazioniBase()] questo può portare
      a gravi BUG dato che il file viene chiuso dopo, suggerimento che propongo: mettere [document.close()] nel metodo [onDestroy()] */
-    fun iniziaCostruzionePDF() {
-        createPdf()
+    fun iniziaCostruzionePDF(): Boolean {
+       return createPdf()
     }
     /* Aggiunge un paragrafo, INPUT: Stringa OUTPUT: niente */
     fun aggiungiParagrafo(paragrafo: String) {
-        this.document!!.add(Paragraph(paragrafo))
+        this.document.add(Paragraph(paragrafo))
     }
     /** Aggiunge una immagine, per la documentazione di iText va usata un Image, più info qui
     https://github.com/itext/itext-publications-examples-java/blob/master/src/main/java/com/itextpdf/samples/sandbox/images/MultipleImages.java
     e qui https://github.com/itext/itext-java
      */
     fun aggiungiImmagine(immagine: Image) {
-        this.document!!.add(immagine)
+        this.document.add(immagine)
     }
     /** Prende come input una lista di ImageProxy e li converte in formati Image (compatibili con iText), successivamente
     aggiunge l'immagine assieme ad una breve didascalia rispettivamente con i metodi [aggiungiImmagine()] e [aggiungiParagrafo()]
@@ -112,14 +113,16 @@ class GeneratorePDF(nome: String) {
     }
     private fun closePdf() {
         try {
-            this.document?.close()
+            this.document.close()
             Log.e(TAG, "PDF chiuso correttamente")
         } catch (exc: Exception) {
             Log.e(TAG, "Il documento non è stato chiuso correttamente: ${exc}", exc)
         }
     }
-    private fun createPdf() {
+    private fun createPdf(): Boolean {
         try {
+            if (file.exists())
+                return false
             val fileOutputStream = FileOutputStream(this.file)
             // Crea un PdfWriter che gestisce la scrittura del PDF
             val writer = PdfWriter(fileOutputStream)
@@ -128,6 +131,8 @@ class GeneratorePDF(nome: String) {
             this.document = Document(pdfDocument)
         } catch (exc: Exception) {
             Log.e(TAG, "Errore: ${exc}")
+            return false
         }
+        return true
     }
 }
