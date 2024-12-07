@@ -11,7 +11,7 @@
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="130dp"
         android:layout_below="@id/informazioni"
         android:background="@drawable/border_scuro"
         android:fitsSystemWindows="true"
