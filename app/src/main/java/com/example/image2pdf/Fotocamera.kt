@@ -18,6 +18,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.image2pdf.databinding.ActivityFotocameraBinding
+import com.example.image2pdf.legacy.SceltaNome
 import com.example.image2pdf.permissions.PermissionManager
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
@@ -81,7 +82,7 @@ class Fotocamera : AppCompatActivity() {
 
     //Questa funzione serve per richiamare l'activity che chiederà il nome per creare il pdf
     private fun richiediNome(){
-        val actRes=Intent(this,SceltaNome::class.java)
+        val actRes=Intent(this, SceltaNome::class.java)
         startActivityForResult(actRes,1)
     }
 

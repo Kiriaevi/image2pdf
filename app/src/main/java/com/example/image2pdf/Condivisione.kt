@@ -1,6 +1,7 @@
 package com.example.image2pdf
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,6 +14,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.image2pdf.legacy.SceltaNome
 import com.example.image2pdf.linuxIntegration.linuxIntegration
 import java.io.File
 import java.util.Date
@@ -78,7 +80,7 @@ class Condivisione : AppCompatActivity() {
             }
             if(stringaFilt.contains(key)){
                 val attuale = dataList.get(posizione)
-                val dati = DataClass(attuale.titolo,attuale.data,attuale.file)
+                val dati = DataClass(attuale.titolo,attuale.data,attuale.file,attuale.utilizzo)//TODO
                 arrayFiltrare.add(dati)
             }
             posizione++
@@ -111,12 +113,15 @@ class Condivisione : AppCompatActivity() {
 
     //Metodo per inserire i dati riga per riga
     fun getData(){
+        val datiUtilizzo = this.getSharedPreferences("datiUtilizzo", Context.MODE_PRIVATE)
         for(i in listaNomi.indices){
             val anno = listaDate[i].year+1900
             val mese = listaDate[i].month+1
-            val dataClass = DataClass(listaNomi[i],"$mese/$anno",listaFile[i])
+            //Inserisco i dati compresi quelli di utilizzo
+            val dataClass = DataClass(listaNomi[i],"$mese/$anno",listaFile[i],datiUtilizzo.getInt(listaNomi[i],0))
             dataList.add(dataClass)
         }
+        dataList.sortByDescending { it.utilizzo }
         recicleView.adapter = AdapterClass(this,dataList)
     }
 
@@ -143,7 +148,7 @@ class Condivisione : AppCompatActivity() {
                     arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
                 }
             }
-            val intentRis = Intent(this,SceltaNome::class.java)
+            val intentRis = Intent(this, SceltaNome::class.java)
             startActivityForResult(intentRis,2)
         }
         else if(requestCode == 2 && data != null){
@@ -171,4 +176,6 @@ class Condivisione : AppCompatActivity() {
         listaNomi.clear()
         listaDate.clear()
     }
+
+
 }

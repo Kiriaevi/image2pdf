@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.image2pdf.legacy.SceltaNome
 
 class NuovoPDF : AppCompatActivity() {
 
@@ -67,7 +68,7 @@ class NuovoPDF : AppCompatActivity() {
                     arrayOfBitmap.add(BitmapFactory.decodeStream(stream))
                 }
             }
-            val intentRis = Intent(this,SceltaNome::class.java)
+            val intentRis = Intent(this, SceltaNome::class.java)
             startActivityForResult(intentRis,2)
         }
         else if(requestCode == 2 && data != null){

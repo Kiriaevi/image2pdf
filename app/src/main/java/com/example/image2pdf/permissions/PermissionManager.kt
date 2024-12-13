@@ -1,7 +1,6 @@
 package com.example.image2pdf.permissions
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -9,7 +8,6 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.example.image2pdf.MainActivity
 
 class PermissionManager(context: Context, activity: FragmentActivity) {
     private val baseContext: Context = context

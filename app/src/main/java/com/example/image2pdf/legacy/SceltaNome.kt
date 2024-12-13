@@ -1,4 +1,4 @@
-package com.example.image2pdf
+package com.example.image2pdf.legacy
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.image2pdf.NuovoPDF
+import com.example.image2pdf.R
 
 class SceltaNome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +17,7 @@ class SceltaNome : AppCompatActivity() {
         setContentView(R.layout.activity_scelta_nome)
         val accetta = findViewById<Button>(R.id.butFragment1)
         val rifiuta = findViewById<Button>(R.id.butFragment2)
-        val resultintent = Intent(this,NuovoPDF::class.java)
+        val resultintent = Intent(this, NuovoPDF::class.java)
         accetta.setOnClickListener {
             val testo = findViewById<TextView>(R.id.fragText1)
             if(testo.text.toString()=="")

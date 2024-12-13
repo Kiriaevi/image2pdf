@@ -23,7 +23,7 @@ import java.io.File
 class AdapterClass(private val context : Context, private val listaDati :ArrayList<DataClass>) : RecyclerView.Adapter<AdapterClass.ViewHolderClass>() {
 
     //Classe che definisce la logica della singola riga
-    class ViewHolderClass(adapterClass: AdapterClass,itemView: View,listaDati: ArrayList<DataClass>):RecyclerView.ViewHolder(itemView) {
+    class ViewHolderClass(context: Context,adapterClass: AdapterClass,itemView: View,listaDati: ArrayList<DataClass>):RecyclerView.ViewHolder(itemView) {
         val name:Button = itemView.findViewById(R.id.NomePdf)
         val data:TextView = itemView.findViewById(R.id.Datapdf)
         val condividi:ImageButton = itemView.findViewById(R.id.condividiPdf)
@@ -33,11 +33,14 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
             name.setOnClickListener {
                 val position = adapterPosition
                 val filePdf : File = listaDati[position].file
+                incrementaUtilizzi(context,listaDati[position].titolo)
                 apriPdf(itemView.context,filePdf)
             }
             condividi.setOnClickListener {
                 val position = adapterPosition
                 val filePdf : File = listaDati[position].file
+                incrementaUtilizzi(context,listaDati[position].titolo)
+                context.getSharedPreferences("datiUtilizzo",Context.MODE_PRIVATE)
                 condividiPdf(itemView.context,filePdf)
             }
             elimina.setOnClickListener {
@@ -75,6 +78,7 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
             }
             context.startActivity(Intent.createChooser(viewIntent,"Condividi il file PDF"))
         }
+
         fun ottieniUri(context: Context,file: File) : Uri{
             val fileUri: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 //Android 10 e versioni successive
@@ -89,11 +93,18 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
             }
             return fileUri
         }
+
+        fun incrementaUtilizzi(context : Context, nome : String){
+            val sharedPref = context.getSharedPreferences("datiUtilizzo",Context.MODE_PRIVATE)
+            val modificatore = sharedPref.edit()
+            modificatore.putInt(nome,sharedPref.getInt(nome,0)+1)
+            modificatore.apply()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderClass {
         val ItemView = LayoutInflater.from(parent.context).inflate(R.layout.rigatabella, parent,false)
-        return ViewHolderClass(this,ItemView,listaDati)
+        return ViewHolderClass(context,this,ItemView,listaDati)
     }
 
     override fun getItemCount(): Int {

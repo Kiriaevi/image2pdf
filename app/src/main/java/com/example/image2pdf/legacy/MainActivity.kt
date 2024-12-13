@@ -1,4 +1,4 @@
-package com.example.image2pdf
+package com.example.image2pdf.legacy
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,9 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.image2pdf.Condivisione
+import com.example.image2pdf.NuovoPDF
+import com.example.image2pdf.R
 import com.example.image2pdf.linuxIntegration.linuxIntegration
 
 class MainActivity : AppCompatActivity() {
