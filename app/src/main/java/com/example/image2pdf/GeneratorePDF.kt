@@ -104,7 +104,7 @@ class GeneratorePDF(nome: String) {
         val immaginiDaIterare: List<Bitmap> = if (deepCopy) deepCopyBitmaps(immaginiCatturate) else immaginiCatturate
         for (item in immaginiDaIterare) {
             aggiungiImmagine(convertiBitMapAImg(item,compress, qlt))
-            aggiungiParagrafo("Immagine $count")
+            //aggiungiParagrafo("Immagine $count")
             count++
         }
         immaginiCatturate.clear()

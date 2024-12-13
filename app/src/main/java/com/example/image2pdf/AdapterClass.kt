@@ -14,6 +14,11 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.util.LinkedList
+import java.util.Queue
 
 //Queste due classi servono ad adattare i dati al RecycleView, si ereditano le classi e si modificano opportunamente
 //View Holder Class serve per la singola riga
@@ -21,13 +26,14 @@ import java.io.File
 //In generale l'adapter View dovrebbe essere ottima per gestire lunghi elenchi
 
 class AdapterClass(private val context : Context, private val listaDati :ArrayList<DataClass>) : RecyclerView.Adapter<AdapterClass.ViewHolderClass>() {
-
     //Classe che definisce la logica della singola riga
     class ViewHolderClass(context: Context,adapterClass: AdapterClass,itemView: View,listaDati: ArrayList<DataClass>):RecyclerView.ViewHolder(itemView) {
         val name:Button = itemView.findViewById(R.id.NomePdf)
         val data:TextView = itemView.findViewById(R.id.Datapdf)
         val condividi:ImageButton = itemView.findViewById(R.id.condividiPdf)
         val elimina:ImageButton = itemView.findViewById(R.id.eliminaPdf)
+
+        val memoria=15 //Costante che ci dice il numero di foto importanti
 
         init {
             name.setOnClickListener {
@@ -97,8 +103,67 @@ class AdapterClass(private val context : Context, private val listaDati :ArrayLi
         fun incrementaUtilizzi(context : Context, nome : String){
             val sharedPref = context.getSharedPreferences("datiUtilizzo",Context.MODE_PRIVATE)
             val modificatore = sharedPref.edit()
+            var coda = scaricadaFile(context,"dataCoda.ser")
+            if(coda==null)
+                coda=LinkedList()
+            //Sono importanti solo gli ultimi 30 click
+            if(coda.size>=memoria){
+                val el = coda.remove()
+                modificatore.putInt(el,sharedPref.getInt(el,0)-1)
+                modificatore.apply()
+                //Elemento non piu importante
+            }
+            coda.add(nome)
+            caricasuFile(context,coda,"dataCoda.ser")
             modificatore.putInt(nome,sharedPref.getInt(nome,0)+1)
             modificatore.apply()
+        }
+
+        //Funzioni che caricano/scaricano la coda da file
+        fun scaricadaFile(context: Context, fileName: String): Queue<String>? {
+            try {
+                // Ottieni l'input stream dal file
+                val fileInputStream = context.openFileInput(fileName)
+
+                // Crea un ObjectInputStream per leggere l'oggetto
+                val objectInputStream = ObjectInputStream(fileInputStream)
+
+                // Leggi l'oggetto dal file e castalo a Queue<String>
+                val queue = objectInputStream.readObject() as Queue<String>
+
+                // Chiudi gli stream
+                objectInputStream.close()
+                fileInputStream.close()
+
+                println("Coda caricata con successo.")
+                return queue
+            } catch (e: Exception) {
+                return LinkedList()
+            }
+            return LinkedList()
+        }
+
+
+        fun caricasuFile(context: Context, queue: Queue<String>, fileName: String) {
+            try {
+                // Ottieni il percorso per scrivere nella memoria interna privata dell'app
+                val fileOutputStream: FileOutputStream
+
+                fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
+
+                // Crea l'ObjectOutputStream per serializzare l'oggetto
+                val objectOutputStream = ObjectOutputStream(fileOutputStream)
+
+                // Scrivi la coda nel file
+                objectOutputStream.writeObject(queue)
+
+                // Chiudi gli stream
+                objectOutputStream.close()
+                fileOutputStream.close()
+
+            } catch (e: Exception) {
+                //Non è cosi importante il caricamento se non succede non distruggo l'app
+            }
         }
     }
 

@@ -17,7 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.image2pdf.legacy.SceltaNome
 import com.example.image2pdf.linuxIntegration.linuxIntegration
 import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.util.Date
+import java.util.LinkedList
+import java.util.Queue
 
 class Condivisione : AppCompatActivity() {
     companion object {
@@ -80,7 +85,7 @@ class Condivisione : AppCompatActivity() {
             }
             if(stringaFilt.contains(key)){
                 val attuale = dataList.get(posizione)
-                val dati = DataClass(attuale.titolo,attuale.data,attuale.file,attuale.utilizzo)//TODO
+                val dati = DataClass(attuale.titolo,attuale.data,attuale.file,attuale.utilizzo)
                 arrayFiltrare.add(dati)
             }
             posizione++
@@ -176,6 +181,4 @@ class Condivisione : AppCompatActivity() {
         listaNomi.clear()
         listaDate.clear()
     }
-
-
 }
