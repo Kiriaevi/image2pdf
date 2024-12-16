@@ -67,7 +67,7 @@ class ServerNanoHttpd(port: Int): NanoHTTPD(port) {
                 }
                 Log.e(TAG, "Tutti i valori sono stati ricevuti, invio delle immagini al generatore di PDF \n")
                 val generatorePDF = GeneratorePDF("NomeACaso")
-                val giaEsiste = generatorePDF.iniziaCostruzionePDF()
+                val giaEsiste = !generatorePDF.iniziaCostruzionePDF()
                 if (giaEsiste)
                     return newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, "text/plain", "Il file pdf già esiste nel dispositivo Android.")
                 val path = generatorePDF.caricaImmagini(immaginiCatturate, deepCopy = true)
